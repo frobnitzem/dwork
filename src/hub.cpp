@@ -1,16 +1,18 @@
 /*
-    Multithreaded Hello World server in C++
+    Multithreaded Redis Hub
 */
 
 #include <pthread.h>
 #include <unistd.h>
 #include <cassert>
-#include <string>
 #include <iostream>
 #include <signal.h>
-#include <zmq.hpp>
 
-const int num_threads = 5;
+#include "qredis.hpp"
+#include "proto.hpp"
+
+const int num_threads = 4;
+
 
 static void s_block_signals (void) {
     sigset_t signal_set;
@@ -27,9 +29,9 @@ static void* WaitForAbortThread(void* arg){
     int sig;
 
     // Socket to talk to other threads
-    int sndhwm = 0;
     zmq::socket_t publisher (context, zmq::socket_type::pub);
-    publisher.setsockopt(ZMQ_SNDHWM, &sndhwm, sizeof(sndhwm));
+    //publisher.setsockopt(ZMQ_SNDHWM, &sndhwm, sizeof(sndhwm));
+    publisher.set(zmq::sockopt::sndhwm, 0);
     publisher.bind("inproc://signals");
 
     // Socket to receive signals
@@ -39,11 +41,9 @@ static void* WaitForAbortThread(void* arg){
     // Get synchronization from subscribers
     for(int subscribers = 0; subscribers <= num_threads; subscribers++) {
         zmq::message_t sub{};
-        syncservice.recv(sub, zmq::recv_flags::none);
+        assert(syncservice.recv(sub, zmq::recv_flags::none).has_value());
         syncservice.send(zmq::buffer(""), zmq::send_flags::none);
-        std::cout << "Subscribed" << std::endl;
     }
-    std::cout << "Waiting" << std::endl;
 
     sigemptyset(&signal_set);
     //sigaddset(&signal_set, SIGABRT);
@@ -63,7 +63,7 @@ zmq::socket_t SubscribeControl(zmq::context_t &context) {
     //  First, connect our subscriber socket
     zmq::socket_t control(context, zmq::socket_type::sub);
     control.connect("inproc://signals");
-    control.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+    control.set(zmq::sockopt::subscribe, "");
 
     //  Second, synchronize with publisher
     zmq::socket_t syncclient(context, zmq::socket_type::req);
@@ -71,12 +71,13 @@ zmq::socket_t SubscribeControl(zmq::context_t &context) {
 
     zmq::message_t resp{};
     syncclient.send(zmq::buffer(""), zmq::send_flags::none);
-    syncclient.recv(resp, zmq::recv_flags::none);
+    assert(syncclient.recv(resp, zmq::recv_flags::none).has_value());
 
     return control;
 }
 
 void *WorkerThread(void *arg) {
+    Redis r("127.0.0.1", 6379);
     zmq::context_t &context = *(zmq::context_t *) arg;
 
     zmq::socket_t control = SubscribeControl(context);
@@ -90,12 +91,10 @@ void *WorkerThread(void *arg) {
     };
     while (true) {
         //  Wait for next request from client
-        zmq::message_t request;
         zmq::poll (&items [0], 2, -1);
         
         // Any waiting controller command acts as 'KILL'
         if (items[1].revents & ZMQ_POLLIN) {
-            std::cout << "Exiting" << std::endl;
             break;
         }
 
@@ -103,22 +102,18 @@ void *WorkerThread(void *arg) {
             continue;
         }
 
-        socket.recv(request, zmq::recv_flags::none);
-        std::cout << "Received request: [" << (char*) request.data() << "]" << std::endl;
+        auto query = RecvProto<dwork::QueryMsg>(socket);
+        std::cout << "Received request: " << query.DebugString() << std::endl;
 
-        //  Do some 'work'
-        sleep (1);
-
-        //  Send reply back to client
-        zmq::message_t reply (6);
-        memcpy ((void *) reply.data (), "World", 6);
-        socket.send(reply, zmq::send_flags::none);
+        SendProto(socket, query);
     }
 
     return NULL;
 }
 
 int main () {
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+
     pthread_t threads[num_threads+1];
 
     //  Prepare our context and sockets
@@ -140,14 +135,16 @@ int main () {
     zmq::socket_t control = SubscribeControl(context);
 
     //  Connect work threads to client threads via a queue
-    zmq::proxy_steerable(clients, workers, nullptr, control);
-    std::cout << "Proxy completed." << std::endl;
+    //zmq::proxy_steerable(clients, workers, nullptr, control);
+    zmq::proxy_steerable(clients, workers, zmq::socket_ref(), control);
+    std::cout << "Process completed." << std::endl;
 
     for (int i = 0; i <= num_threads; i++) {
         void *ret;
         pthread_join(threads[i], &ret);
     }
 
+    google::protobuf::ShutdownProtobufLibrary();
     return 0;
 }
 

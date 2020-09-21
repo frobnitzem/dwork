@@ -1,0 +1,56 @@
+syntax = "proto2";
+
+package dwork;
+
+message TaskMsg {
+  enum State {
+    Pending = 0;
+    Stolen  = 1;
+    Waiting = 2;
+    Copying = 3;
+    Ready   = 4;
+    Started = 5;
+    Done    = 6;
+  }
+
+  message Dep {
+    required string id       = 1; // hash(obj)
+    optional string location = 2; // url
+  }
+  message LogMsg { // written on entry to ea. state
+    required State state = 1;
+    required int32 time  = 2;
+  }
+
+  required string name   = 1; // function var1 var2 ...
+  required string origin = 2; // hostname
+  optional string location = 3 [default = "alloc"]; // url
+
+  repeated Dep pred   = 4;
+  repeated Dep succ   = 5;
+  repeated LogMsg log = 6;
+}
+
+message QueryMsg {
+  enum Type {
+    Steal    = 0; // request a task
+    Notify   = 1; // notify on completion of a task
+    Lookup   = 2; // lookup a location
+  }
+  required Type    type = 1;
+  optional TaskMsg task = 2; // required when type == Notify
+  optional string  name = 3; // id to lookup OR hostname doing stealing
+}
+
+message StealReply {
+  optional TaskMsg task = 4; // transferred task (or none if error)
+}
+
+message NotifyReply { // number of copies expected
+  required int32 deps = 5;
+}
+
+message LookupReply {
+  optional string location = 6; // OR id to lookup OR hostname doing stealing
+}
+
