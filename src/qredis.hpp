@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <optional>
 #include <string_view>
 #include <sys/time.h>
 
@@ -27,37 +28,32 @@ class Redis {
             down();
         }
 
-        std::string cmd(const std::list<std::string_view> &args) {
-            redisReply *reply = run(args);
-            if(reply == NULL) {
-                down();
-                return std::string("ERR");
-            }
-            std::string ret(reply->str, reply->len); // copy out the reply
-            freeReplyObject(reply);
-
-            return ret;
+        std::optional<std::string> get(std::string_view arg) {
+            return optstr_cmd({"GET", arg});
+        }
+        int set(std::string_view arg1, std::string_view arg2) {
+            return int_cmd({"SET", arg1, arg2});
+        }
+        int del(std::string_view arg) {
+            return int_cmd({"DEL", arg});
         }
 
-        std::string get(std::string_view arg) {
-            return cmd({"GET", arg});
+        std::optional<std::string> rpop(std::string_view lst) {
+            return optstr_cmd({"RPOP", lst});
         }
-        std::string set(std::string_view arg1, std::string_view arg2) {
-            return cmd({"SET", arg1, arg2});
-        }
-        std::string del(std::string_view arg) {
-            return cmd({"DEL", arg});
+        int lpush(std::string_view lst, std::string_view arg) {
+            return int_cmd({"LPUSH", lst, arg});
         }
 
         int incr(std::string_view counter) {
-            redisReply *reply = run({"INCR", counter});
-            if(reply == NULL) {
-                down();
-                return -1;
-            }
-            int val = reply->integer;
-            freeReplyObject(reply);
-            return val;
+            return int_cmd({"INCR", counter});
+        }
+
+        int sadd(std::string_view set, std::string_view key) {
+            return int_cmd({"SADD", set, key});
+        }
+        int srem(std::string_view set, std::string_view key) {
+            return int_cmd({"SREM", set, key});
         }
 
         int get_state() {
@@ -101,6 +97,30 @@ class Redis {
                 argvlen[count] = t.size();
                 count++;
             }
-            return (redisReply *)redisCommandArgv(c, count, argv, argvlen);
+            auto reply = (redisReply *)redisCommandArgv(c, count, argv, argvlen);
+            if(reply == NULL) down();
+            return reply;
         }
+
+        std::optional<std::string> optstr_cmd(const std::list<std::string_view> &args) {
+            redisReply *reply = run(args);
+            if(reply == NULL || reply->type == REDIS_REPLY_NIL) {
+                freeReplyObject(reply);
+                return {};
+            }
+            std::string ret(reply->str, reply->len); // copy out the reply
+            freeReplyObject(reply);
+            return ret;
+        }
+
+        int int_cmd(const std::list<std::string_view> &args) {
+            auto reply = run(args);
+            if(reply == NULL) {
+                return 0;
+            }
+            int ret = reply->integer;
+            freeReplyObject(reply);
+            return ret;
+        }
+
 };

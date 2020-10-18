@@ -11,6 +11,7 @@ message TaskMsg {
     Ready   = 4;
     Started = 5;
     Done    = 6;
+    Recorded = 7;
   }
 
   message Dep {
@@ -19,7 +20,7 @@ message TaskMsg {
   }
   message LogMsg { // written on entry to ea. state
     required State state = 1;
-    required int32 time  = 2;
+    required int64 time = 2; // microseconds
   }
 
   required string name   = 1; // function var1 var2 ...
@@ -33,24 +34,16 @@ message TaskMsg {
 
 message QueryMsg {
   enum Type {
-    Steal    = 0; // request a task
-    Notify   = 1; // notify on completion of a task
+    Steal    = 0; // request a task (requires name == hostname)
+    Transfer = 1; // notify on completion of a task (requires TaskMsg)
     Lookup   = 2; // lookup a location
+    NotFound = 3; // reply to steal / notify
+    Exit     = 4; // exiting token
+    OK       = 5;
   }
   required Type    type = 1;
-  optional TaskMsg task = 2; // required when type == Notify
+  repeated TaskMsg task = 2; // required when type == Notify
   optional string  name = 3; // id to lookup OR hostname doing stealing
-}
-
-message StealReply {
-  optional TaskMsg task = 4; // transferred task (or none if error)
-}
-
-message NotifyReply { // number of copies expected
-  required int32 deps = 5;
-}
-
-message LookupReply {
   optional string location = 6; // OR id to lookup OR hostname doing stealing
 }
 

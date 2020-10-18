@@ -35,15 +35,6 @@ const ::google::protobuf::Descriptor* QueryMsg_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   QueryMsg_reflection_ = NULL;
 const ::google::protobuf::EnumDescriptor* QueryMsg_Type_descriptor_ = NULL;
-const ::google::protobuf::Descriptor* StealReply_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  StealReply_reflection_ = NULL;
-const ::google::protobuf::Descriptor* NotifyReply_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  NotifyReply_reflection_ = NULL;
-const ::google::protobuf::Descriptor* LookupReply_descriptor_ = NULL;
-const ::google::protobuf::internal::GeneratedMessageReflection*
-  LookupReply_reflection_ = NULL;
 
 }  // namespace
 
@@ -109,10 +100,11 @@ void protobuf_AssignDesc_TaskMsg_2eproto() {
       -1);
   TaskMsg_State_descriptor_ = TaskMsg_descriptor_->enum_type(0);
   QueryMsg_descriptor_ = file->message_type(1);
-  static const int QueryMsg_offsets_[3] = {
+  static const int QueryMsg_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryMsg, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryMsg, task_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryMsg, name_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryMsg, location_),
   };
   QueryMsg_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
@@ -126,51 +118,6 @@ void protobuf_AssignDesc_TaskMsg_2eproto() {
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryMsg, _internal_metadata_),
       -1);
   QueryMsg_Type_descriptor_ = QueryMsg_descriptor_->enum_type(0);
-  StealReply_descriptor_ = file->message_type(2);
-  static const int StealReply_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(StealReply, task_),
-  };
-  StealReply_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      StealReply_descriptor_,
-      StealReply::default_instance_,
-      StealReply_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(StealReply, _has_bits_[0]),
-      -1,
-      -1,
-      sizeof(StealReply),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(StealReply, _internal_metadata_),
-      -1);
-  NotifyReply_descriptor_ = file->message_type(3);
-  static const int NotifyReply_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NotifyReply, deps_),
-  };
-  NotifyReply_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      NotifyReply_descriptor_,
-      NotifyReply::default_instance_,
-      NotifyReply_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NotifyReply, _has_bits_[0]),
-      -1,
-      -1,
-      sizeof(NotifyReply),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(NotifyReply, _internal_metadata_),
-      -1);
-  LookupReply_descriptor_ = file->message_type(4);
-  static const int LookupReply_offsets_[1] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LookupReply, location_),
-  };
-  LookupReply_reflection_ =
-    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
-      LookupReply_descriptor_,
-      LookupReply::default_instance_,
-      LookupReply_offsets_,
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LookupReply, _has_bits_[0]),
-      -1,
-      -1,
-      sizeof(LookupReply),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(LookupReply, _internal_metadata_),
-      -1);
 }
 
 namespace {
@@ -192,12 +139,6 @@ void protobuf_RegisterTypes(const ::std::string&) {
       TaskMsg_LogMsg_descriptor_, &TaskMsg_LogMsg::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       QueryMsg_descriptor_, &QueryMsg::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      StealReply_descriptor_, &StealReply::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      NotifyReply_descriptor_, &NotifyReply::default_instance());
-  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      LookupReply_descriptor_, &LookupReply::default_instance());
 }
 
 }  // namespace
@@ -212,12 +153,6 @@ void protobuf_ShutdownFile_TaskMsg_2eproto() {
   delete TaskMsg_LogMsg_reflection_;
   delete QueryMsg::default_instance_;
   delete QueryMsg_reflection_;
-  delete StealReply::default_instance_;
-  delete StealReply_reflection_;
-  delete NotifyReply::default_instance_;
-  delete NotifyReply_reflection_;
-  delete LookupReply::default_instance_;
-  delete LookupReply_reflection_;
 }
 
 void protobuf_AddDesc_TaskMsg_2eproto() GOOGLE_ATTRIBUTE_COLD;
@@ -228,22 +163,21 @@ void protobuf_AddDesc_TaskMsg_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\rTaskMsg.proto\022\005dwork\"\350\002\n\007TaskMsg\022\014\n\004na"
+    "\n\rTaskMsg.proto\022\005dwork\"\366\002\n\007TaskMsg\022\014\n\004na"
     "me\030\001 \002(\t\022\016\n\006origin\030\002 \002(\t\022\027\n\010location\030\003 \001"
     "(\t:\005alloc\022 \n\004pred\030\004 \003(\0132\022.dwork.TaskMsg."
     "Dep\022 \n\004succ\030\005 \003(\0132\022.dwork.TaskMsg.Dep\022\"\n"
     "\003log\030\006 \003(\0132\025.dwork.TaskMsg.LogMsg\032#\n\003Dep"
     "\022\n\n\002id\030\001 \002(\t\022\020\n\010location\030\002 \001(\t\032;\n\006LogMsg"
     "\022#\n\005state\030\001 \002(\0162\024.dwork.TaskMsg.State\022\014\n"
-    "\004time\030\002 \002(\005\"\\\n\005State\022\013\n\007Pending\020\000\022\n\n\006Sto"
+    "\004time\030\002 \002(\003\"j\n\005State\022\013\n\007Pending\020\000\022\n\n\006Sto"
     "len\020\001\022\013\n\007Waiting\020\002\022\013\n\007Copying\020\003\022\t\n\005Ready"
-    "\020\004\022\013\n\007Started\020\005\022\010\n\004Done\020\006\"\205\001\n\010QueryMsg\022\""
-    "\n\004type\030\001 \002(\0162\024.dwork.QueryMsg.Type\022\034\n\004ta"
-    "sk\030\002 \001(\0132\016.dwork.TaskMsg\022\014\n\004name\030\003 \001(\t\")"
-    "\n\004Type\022\t\n\005Steal\020\000\022\n\n\006Notify\020\001\022\n\n\006Lookup\020"
-    "\002\"*\n\nStealReply\022\034\n\004task\030\004 \001(\0132\016.dwork.Ta"
-    "skMsg\"\033\n\013NotifyReply\022\014\n\004deps\030\005 \002(\005\"\037\n\013Lo"
-    "okupReply\022\020\n\010location\030\006 \001(\t", 627);
+    "\020\004\022\013\n\007Started\020\005\022\010\n\004Done\020\006\022\014\n\010Recorded\020\007\""
+    "\271\001\n\010QueryMsg\022\"\n\004type\030\001 \002(\0162\024.dwork.Query"
+    "Msg.Type\022\034\n\004task\030\002 \003(\0132\016.dwork.TaskMsg\022\014"
+    "\n\004name\030\003 \001(\t\022\020\n\010location\030\006 \001(\t\"K\n\004Type\022\t"
+    "\n\005Steal\020\000\022\014\n\010Transfer\020\001\022\n\n\006Lookup\020\002\022\014\n\010N"
+    "otFound\020\003\022\010\n\004Exit\020\004\022\006\n\002OK\020\005", 587);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "TaskMsg.proto", &protobuf_RegisterTypes);
   TaskMsg::_default_location_ =
@@ -252,16 +186,10 @@ void protobuf_AddDesc_TaskMsg_2eproto() {
   TaskMsg_Dep::default_instance_ = new TaskMsg_Dep();
   TaskMsg_LogMsg::default_instance_ = new TaskMsg_LogMsg();
   QueryMsg::default_instance_ = new QueryMsg();
-  StealReply::default_instance_ = new StealReply();
-  NotifyReply::default_instance_ = new NotifyReply();
-  LookupReply::default_instance_ = new LookupReply();
   TaskMsg::default_instance_->InitAsDefaultInstance();
   TaskMsg_Dep::default_instance_->InitAsDefaultInstance();
   TaskMsg_LogMsg::default_instance_->InitAsDefaultInstance();
   QueryMsg::default_instance_->InitAsDefaultInstance();
-  StealReply::default_instance_->InitAsDefaultInstance();
-  NotifyReply::default_instance_->InitAsDefaultInstance();
-  LookupReply::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_TaskMsg_2eproto);
 }
 
@@ -287,6 +215,7 @@ bool TaskMsg_State_IsValid(int value) {
     case 4:
     case 5:
     case 6:
+    case 7:
       return true;
     default:
       return false;
@@ -301,6 +230,7 @@ const TaskMsg_State TaskMsg::Copying;
 const TaskMsg_State TaskMsg::Ready;
 const TaskMsg_State TaskMsg::Started;
 const TaskMsg_State TaskMsg::Done;
+const TaskMsg_State TaskMsg::Recorded;
 const TaskMsg_State TaskMsg::State_MIN;
 const TaskMsg_State TaskMsg::State_MAX;
 const int TaskMsg::State_ARRAYSIZE;
@@ -649,7 +579,7 @@ TaskMsg_LogMsg::TaskMsg_LogMsg(const TaskMsg_LogMsg& from)
 void TaskMsg_LogMsg::SharedCtor() {
   _cached_size_ = 0;
   state_ = 0;
-  time_ = 0;
+  time_ = GOOGLE_LONGLONG(0);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -706,7 +636,7 @@ void TaskMsg_LogMsg::Clear() {
            ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
 } while (0)
 
-  ZR_(state_, time_);
+  ZR_(time_, state_);
 
 #undef ZR_HELPER_
 #undef ZR_
@@ -746,12 +676,12 @@ bool TaskMsg_LogMsg::MergePartialFromCodedStream(
         break;
       }
 
-      // required int32 time = 2;
+      // required int64 time = 2;
       case 2: {
         if (tag == 16) {
          parse_time:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
                  input, &time_)));
           set_has_time();
         } else {
@@ -792,9 +722,9 @@ void TaskMsg_LogMsg::SerializeWithCachedSizes(
       1, this->state(), output);
   }
 
-  // required int32 time = 2;
+  // required int64 time = 2;
   if (has_time()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->time(), output);
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(2, this->time(), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -813,9 +743,9 @@ void TaskMsg_LogMsg::SerializeWithCachedSizes(
       1, this->state(), target);
   }
 
-  // required int32 time = 2;
+  // required int64 time = 2;
   if (has_time()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->time(), target);
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(2, this->time(), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -837,9 +767,9 @@ int TaskMsg_LogMsg::RequiredFieldsByteSizeFallback() const {
   }
 
   if (has_time()) {
-    // required int32 time = 2;
+    // required int64 time = 2;
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->time());
   }
 
@@ -854,9 +784,9 @@ int TaskMsg_LogMsg::ByteSize() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->state());
 
-    // required int32 time = 2;
+    // required int64 time = 2;
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
         this->time());
 
   } else {
@@ -1612,7 +1542,7 @@ void TaskMsg_LogMsg::clear_state() {
   // @@protoc_insertion_point(field_set:dwork.TaskMsg.LogMsg.state)
 }
 
-// required int32 time = 2;
+// required int64 time = 2;
 bool TaskMsg_LogMsg::has_time() const {
   return (_has_bits_[0] & 0x00000002u) != 0;
 }
@@ -1623,14 +1553,14 @@ void TaskMsg_LogMsg::clear_has_time() {
   _has_bits_[0] &= ~0x00000002u;
 }
 void TaskMsg_LogMsg::clear_time() {
-  time_ = 0;
+  time_ = GOOGLE_LONGLONG(0);
   clear_has_time();
 }
- ::google::protobuf::int32 TaskMsg_LogMsg::time() const {
+ ::google::protobuf::int64 TaskMsg_LogMsg::time() const {
   // @@protoc_insertion_point(field_get:dwork.TaskMsg.LogMsg.time)
   return time_;
 }
- void TaskMsg_LogMsg::set_time(::google::protobuf::int32 value) {
+ void TaskMsg_LogMsg::set_time(::google::protobuf::int64 value) {
   set_has_time();
   time_ = value;
   // @@protoc_insertion_point(field_set:dwork.TaskMsg.LogMsg.time)
@@ -1905,6 +1835,9 @@ bool QueryMsg_Type_IsValid(int value) {
     case 0:
     case 1:
     case 2:
+    case 3:
+    case 4:
+    case 5:
       return true;
     default:
       return false;
@@ -1913,8 +1846,11 @@ bool QueryMsg_Type_IsValid(int value) {
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const QueryMsg_Type QueryMsg::Steal;
-const QueryMsg_Type QueryMsg::Notify;
+const QueryMsg_Type QueryMsg::Transfer;
 const QueryMsg_Type QueryMsg::Lookup;
+const QueryMsg_Type QueryMsg::NotFound;
+const QueryMsg_Type QueryMsg::Exit;
+const QueryMsg_Type QueryMsg::OK;
 const QueryMsg_Type QueryMsg::Type_MIN;
 const QueryMsg_Type QueryMsg::Type_MAX;
 const int QueryMsg::Type_ARRAYSIZE;
@@ -1923,6 +1859,7 @@ const int QueryMsg::Type_ARRAYSIZE;
 const int QueryMsg::kTypeFieldNumber;
 const int QueryMsg::kTaskFieldNumber;
 const int QueryMsg::kNameFieldNumber;
+const int QueryMsg::kLocationFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 QueryMsg::QueryMsg()
@@ -1932,7 +1869,6 @@ QueryMsg::QueryMsg()
 }
 
 void QueryMsg::InitAsDefaultInstance() {
-  task_ = const_cast< ::dwork::TaskMsg*>(&::dwork::TaskMsg::default_instance());
 }
 
 QueryMsg::QueryMsg(const QueryMsg& from)
@@ -1947,8 +1883,8 @@ void QueryMsg::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   type_ = 0;
-  task_ = NULL;
   name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  location_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -1959,8 +1895,8 @@ QueryMsg::~QueryMsg() {
 
 void QueryMsg::SharedDtor() {
   name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  location_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
-    delete task_;
   }
 }
 
@@ -1991,15 +1927,16 @@ QueryMsg* QueryMsg::New(::google::protobuf::Arena* arena) const {
 
 void QueryMsg::Clear() {
 // @@protoc_insertion_point(message_clear_start:dwork.QueryMsg)
-  if (_has_bits_[0 / 32] & 7u) {
+  if (_has_bits_[0 / 32] & 13u) {
     type_ = 0;
-    if (has_task()) {
-      if (task_ != NULL) task_->::dwork::TaskMsg::Clear();
-    }
     if (has_name()) {
       name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
+    if (has_location()) {
+      location_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    }
   }
+  task_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   if (_internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->Clear();
@@ -2035,15 +1972,19 @@ bool QueryMsg::MergePartialFromCodedStream(
         break;
       }
 
-      // optional .dwork.TaskMsg task = 2;
+      // repeated .dwork.TaskMsg task = 2;
       case 2: {
         if (tag == 18) {
          parse_task:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_task()));
+          DO_(input->IncrementRecursionDepth());
+         parse_loop_task:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtualNoRecursionDepth(
+                input, add_task()));
         } else {
           goto handle_unusual;
         }
+        if (input->ExpectTag(18)) goto parse_loop_task;
+        input->UnsafeDecrementRecursionDepth();
         if (input->ExpectTag(26)) goto parse_name;
         break;
       }
@@ -2058,6 +1999,23 @@ bool QueryMsg::MergePartialFromCodedStream(
             this->name().data(), this->name().length(),
             ::google::protobuf::internal::WireFormat::PARSE,
             "dwork.QueryMsg.name");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(50)) goto parse_location;
+        break;
+      }
+
+      // optional string location = 6;
+      case 6: {
+        if (tag == 50) {
+         parse_location:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_location()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+            this->location().data(), this->location().length(),
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "dwork.QueryMsg.location");
         } else {
           goto handle_unusual;
         }
@@ -2096,10 +2054,10 @@ void QueryMsg::SerializeWithCachedSizes(
       1, this->type(), output);
   }
 
-  // optional .dwork.TaskMsg task = 2;
-  if (has_task()) {
+  // repeated .dwork.TaskMsg task = 2;
+  for (unsigned int i = 0, n = this->task_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      2, *this->task_, output);
+      2, this->task(i), output);
   }
 
   // optional string name = 3;
@@ -2110,6 +2068,16 @@ void QueryMsg::SerializeWithCachedSizes(
       "dwork.QueryMsg.name");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       3, this->name(), output);
+  }
+
+  // optional string location = 6;
+  if (has_location()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->location().data(), this->location().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "dwork.QueryMsg.location");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      6, this->location(), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -2128,11 +2096,11 @@ void QueryMsg::SerializeWithCachedSizes(
       1, this->type(), target);
   }
 
-  // optional .dwork.TaskMsg task = 2;
-  if (has_task()) {
+  // repeated .dwork.TaskMsg task = 2;
+  for (unsigned int i = 0, n = this->task_size(); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageNoVirtualToArray(
-        2, *this->task_, false, target);
+        2, this->task(i), false, target);
   }
 
   // optional string name = 3;
@@ -2144,6 +2112,17 @@ void QueryMsg::SerializeWithCachedSizes(
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         3, this->name(), target);
+  }
+
+  // optional string location = 6;
+  if (has_location()) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->location().data(), this->location().length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "dwork.QueryMsg.location");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        6, this->location(), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -2163,14 +2142,7 @@ int QueryMsg::ByteSize() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
   }
-  if (_has_bits_[1 / 32] & 6u) {
-    // optional .dwork.TaskMsg task = 2;
-    if (has_task()) {
-      total_size += 1 +
-        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-          *this->task_);
-    }
-
+  if (_has_bits_[2 / 32] & 12u) {
     // optional string name = 3;
     if (has_name()) {
       total_size += 1 +
@@ -2178,7 +2150,22 @@ int QueryMsg::ByteSize() const {
           this->name());
     }
 
+    // optional string location = 6;
+    if (has_location()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::StringSize(
+          this->location());
+    }
+
   }
+  // repeated .dwork.TaskMsg task = 2;
+  total_size += 1 * this->task_size();
+  for (int i = 0; i < this->task_size(); i++) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+        this->task(i));
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     total_size +=
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
@@ -2212,16 +2199,18 @@ void QueryMsg::MergeFrom(const QueryMsg& from) {
   if (GOOGLE_PREDICT_FALSE(&from == this)) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
+  task_.MergeFrom(from.task_);
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
     if (from.has_type()) {
       set_type(from.type());
     }
-    if (from.has_task()) {
-      mutable_task()->::dwork::TaskMsg::MergeFrom(from.task());
-    }
     if (from.has_name()) {
       set_has_name();
       name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.name_);
+    }
+    if (from.has_location()) {
+      set_has_location();
+      location_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.location_);
     }
   }
   if (from._internal_metadata_.have_unknown_fields()) {
@@ -2246,9 +2235,7 @@ void QueryMsg::CopyFrom(const QueryMsg& from) {
 bool QueryMsg::IsInitialized() const {
   if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
 
-  if (has_task()) {
-    if (!this->task_->IsInitialized()) return false;
-  }
+  if (!::google::protobuf::internal::AllAreInitialized(this->task())) return false;
   return true;
 }
 
@@ -2258,8 +2245,9 @@ void QueryMsg::Swap(QueryMsg* other) {
 }
 void QueryMsg::InternalSwap(QueryMsg* other) {
   std::swap(type_, other->type_);
-  std::swap(task_, other->task_);
+  task_.UnsafeArenaSwap(&other->task_);
   name_.Swap(&other->name_);
+  location_.Swap(&other->location_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   std::swap(_cached_size_, other->_cached_size_);
@@ -2301,48 +2289,34 @@ void QueryMsg::clear_type() {
   // @@protoc_insertion_point(field_set:dwork.QueryMsg.type)
 }
 
-// optional .dwork.TaskMsg task = 2;
-bool QueryMsg::has_task() const {
-  return (_has_bits_[0] & 0x00000002u) != 0;
-}
-void QueryMsg::set_has_task() {
-  _has_bits_[0] |= 0x00000002u;
-}
-void QueryMsg::clear_has_task() {
-  _has_bits_[0] &= ~0x00000002u;
+// repeated .dwork.TaskMsg task = 2;
+int QueryMsg::task_size() const {
+  return task_.size();
 }
 void QueryMsg::clear_task() {
-  if (task_ != NULL) task_->::dwork::TaskMsg::Clear();
-  clear_has_task();
+  task_.Clear();
 }
-const ::dwork::TaskMsg& QueryMsg::task() const {
+const ::dwork::TaskMsg& QueryMsg::task(int index) const {
   // @@protoc_insertion_point(field_get:dwork.QueryMsg.task)
-  return task_ != NULL ? *task_ : *default_instance_->task_;
+  return task_.Get(index);
 }
-::dwork::TaskMsg* QueryMsg::mutable_task() {
-  set_has_task();
-  if (task_ == NULL) {
-    task_ = new ::dwork::TaskMsg;
-  }
+::dwork::TaskMsg* QueryMsg::mutable_task(int index) {
   // @@protoc_insertion_point(field_mutable:dwork.QueryMsg.task)
+  return task_.Mutable(index);
+}
+::dwork::TaskMsg* QueryMsg::add_task() {
+  // @@protoc_insertion_point(field_add:dwork.QueryMsg.task)
+  return task_.Add();
+}
+::google::protobuf::RepeatedPtrField< ::dwork::TaskMsg >*
+QueryMsg::mutable_task() {
+  // @@protoc_insertion_point(field_mutable_list:dwork.QueryMsg.task)
+  return &task_;
+}
+const ::google::protobuf::RepeatedPtrField< ::dwork::TaskMsg >&
+QueryMsg::task() const {
+  // @@protoc_insertion_point(field_list:dwork.QueryMsg.task)
   return task_;
-}
-::dwork::TaskMsg* QueryMsg::release_task() {
-  // @@protoc_insertion_point(field_release:dwork.QueryMsg.task)
-  clear_has_task();
-  ::dwork::TaskMsg* temp = task_;
-  task_ = NULL;
-  return temp;
-}
-void QueryMsg::set_allocated_task(::dwork::TaskMsg* task) {
-  delete task_;
-  task_ = task;
-  if (task) {
-    set_has_task();
-  } else {
-    clear_has_task();
-  }
-  // @@protoc_insertion_point(field_set_allocated:dwork.QueryMsg.task)
 }
 
 // optional string name = 3;
@@ -2399,893 +2373,58 @@ void QueryMsg::clear_name() {
   // @@protoc_insertion_point(field_set_allocated:dwork.QueryMsg.name)
 }
 
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int StealReply::kTaskFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-StealReply::StealReply()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:dwork.StealReply)
-}
-
-void StealReply::InitAsDefaultInstance() {
-  task_ = const_cast< ::dwork::TaskMsg*>(&::dwork::TaskMsg::default_instance());
-}
-
-StealReply::StealReply(const StealReply& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:dwork.StealReply)
-}
-
-void StealReply::SharedCtor() {
-  _cached_size_ = 0;
-  task_ = NULL;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-StealReply::~StealReply() {
-  // @@protoc_insertion_point(destructor:dwork.StealReply)
-  SharedDtor();
-}
-
-void StealReply::SharedDtor() {
-  if (this != default_instance_) {
-    delete task_;
-  }
-}
-
-void StealReply::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* StealReply::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return StealReply_descriptor_;
-}
-
-const StealReply& StealReply::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_TaskMsg_2eproto();
-  return *default_instance_;
-}
-
-StealReply* StealReply::default_instance_ = NULL;
-
-StealReply* StealReply::New(::google::protobuf::Arena* arena) const {
-  StealReply* n = new StealReply;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void StealReply::Clear() {
-// @@protoc_insertion_point(message_clear_start:dwork.StealReply)
-  if (has_task()) {
-    if (task_ != NULL) task_->::dwork::TaskMsg::Clear();
-  }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  if (_internal_metadata_.have_unknown_fields()) {
-    mutable_unknown_fields()->Clear();
-  }
-}
-
-bool StealReply::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:dwork.StealReply)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional .dwork.TaskMsg task = 4;
-      case 4: {
-        if (tag == 34) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
-               input, mutable_task()));
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:dwork.StealReply)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:dwork.StealReply)
-  return false;
-#undef DO_
-}
-
-void StealReply::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:dwork.StealReply)
-  // optional .dwork.TaskMsg task = 4;
-  if (has_task()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      4, *this->task_, output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:dwork.StealReply)
-}
-
-::google::protobuf::uint8* StealReply::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:dwork.StealReply)
-  // optional .dwork.TaskMsg task = 4;
-  if (has_task()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageNoVirtualToArray(
-        4, *this->task_, false, target);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:dwork.StealReply)
-  return target;
-}
-
-int StealReply::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:dwork.StealReply)
-  int total_size = 0;
-
-  // optional .dwork.TaskMsg task = 4;
-  if (has_task()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
-        *this->task_);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void StealReply::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:dwork.StealReply)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const StealReply* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const StealReply>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:dwork.StealReply)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:dwork.StealReply)
-    MergeFrom(*source);
-  }
-}
-
-void StealReply::MergeFrom(const StealReply& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:dwork.StealReply)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_task()) {
-      mutable_task()->::dwork::TaskMsg::MergeFrom(from.task());
-    }
-  }
-  if (from._internal_metadata_.have_unknown_fields()) {
-    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
-  }
-}
-
-void StealReply::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:dwork.StealReply)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void StealReply::CopyFrom(const StealReply& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:dwork.StealReply)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool StealReply::IsInitialized() const {
-
-  if (has_task()) {
-    if (!this->task_->IsInitialized()) return false;
-  }
-  return true;
-}
-
-void StealReply::Swap(StealReply* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void StealReply::InternalSwap(StealReply* other) {
-  std::swap(task_, other->task_);
-  std::swap(_has_bits_[0], other->_has_bits_[0]);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata StealReply::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = StealReply_descriptor_;
-  metadata.reflection = StealReply_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// StealReply
-
-// optional .dwork.TaskMsg task = 4;
-bool StealReply::has_task() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-void StealReply::set_has_task() {
-  _has_bits_[0] |= 0x00000001u;
-}
-void StealReply::clear_has_task() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-void StealReply::clear_task() {
-  if (task_ != NULL) task_->::dwork::TaskMsg::Clear();
-  clear_has_task();
-}
-const ::dwork::TaskMsg& StealReply::task() const {
-  // @@protoc_insertion_point(field_get:dwork.StealReply.task)
-  return task_ != NULL ? *task_ : *default_instance_->task_;
-}
-::dwork::TaskMsg* StealReply::mutable_task() {
-  set_has_task();
-  if (task_ == NULL) {
-    task_ = new ::dwork::TaskMsg;
-  }
-  // @@protoc_insertion_point(field_mutable:dwork.StealReply.task)
-  return task_;
-}
-::dwork::TaskMsg* StealReply::release_task() {
-  // @@protoc_insertion_point(field_release:dwork.StealReply.task)
-  clear_has_task();
-  ::dwork::TaskMsg* temp = task_;
-  task_ = NULL;
-  return temp;
-}
-void StealReply::set_allocated_task(::dwork::TaskMsg* task) {
-  delete task_;
-  task_ = task;
-  if (task) {
-    set_has_task();
-  } else {
-    clear_has_task();
-  }
-  // @@protoc_insertion_point(field_set_allocated:dwork.StealReply.task)
-}
-
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int NotifyReply::kDepsFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-NotifyReply::NotifyReply()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:dwork.NotifyReply)
-}
-
-void NotifyReply::InitAsDefaultInstance() {
-}
-
-NotifyReply::NotifyReply(const NotifyReply& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:dwork.NotifyReply)
-}
-
-void NotifyReply::SharedCtor() {
-  _cached_size_ = 0;
-  deps_ = 0;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-NotifyReply::~NotifyReply() {
-  // @@protoc_insertion_point(destructor:dwork.NotifyReply)
-  SharedDtor();
-}
-
-void NotifyReply::SharedDtor() {
-  if (this != default_instance_) {
-  }
-}
-
-void NotifyReply::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* NotifyReply::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return NotifyReply_descriptor_;
-}
-
-const NotifyReply& NotifyReply::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_TaskMsg_2eproto();
-  return *default_instance_;
-}
-
-NotifyReply* NotifyReply::default_instance_ = NULL;
-
-NotifyReply* NotifyReply::New(::google::protobuf::Arena* arena) const {
-  NotifyReply* n = new NotifyReply;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void NotifyReply::Clear() {
-// @@protoc_insertion_point(message_clear_start:dwork.NotifyReply)
-  deps_ = 0;
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  if (_internal_metadata_.have_unknown_fields()) {
-    mutable_unknown_fields()->Clear();
-  }
-}
-
-bool NotifyReply::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:dwork.NotifyReply)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required int32 deps = 5;
-      case 5: {
-        if (tag == 40) {
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &deps_)));
-          set_has_deps();
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:dwork.NotifyReply)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:dwork.NotifyReply)
-  return false;
-#undef DO_
-}
-
-void NotifyReply::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:dwork.NotifyReply)
-  // required int32 deps = 5;
-  if (has_deps()) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(5, this->deps(), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:dwork.NotifyReply)
-}
-
-::google::protobuf::uint8* NotifyReply::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:dwork.NotifyReply)
-  // required int32 deps = 5;
-  if (has_deps()) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(5, this->deps(), target);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:dwork.NotifyReply)
-  return target;
-}
-
-int NotifyReply::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:dwork.NotifyReply)
-  int total_size = 0;
-
-  // required int32 deps = 5;
-  if (has_deps()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->deps());
-  }
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void NotifyReply::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:dwork.NotifyReply)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const NotifyReply* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const NotifyReply>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:dwork.NotifyReply)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:dwork.NotifyReply)
-    MergeFrom(*source);
-  }
-}
-
-void NotifyReply::MergeFrom(const NotifyReply& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:dwork.NotifyReply)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_deps()) {
-      set_deps(from.deps());
-    }
-  }
-  if (from._internal_metadata_.have_unknown_fields()) {
-    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
-  }
-}
-
-void NotifyReply::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:dwork.NotifyReply)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void NotifyReply::CopyFrom(const NotifyReply& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:dwork.NotifyReply)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool NotifyReply::IsInitialized() const {
-  if ((_has_bits_[0] & 0x00000001) != 0x00000001) return false;
-
-  return true;
-}
-
-void NotifyReply::Swap(NotifyReply* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void NotifyReply::InternalSwap(NotifyReply* other) {
-  std::swap(deps_, other->deps_);
-  std::swap(_has_bits_[0], other->_has_bits_[0]);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata NotifyReply::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = NotifyReply_descriptor_;
-  metadata.reflection = NotifyReply_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// NotifyReply
-
-// required int32 deps = 5;
-bool NotifyReply::has_deps() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
-}
-void NotifyReply::set_has_deps() {
-  _has_bits_[0] |= 0x00000001u;
-}
-void NotifyReply::clear_has_deps() {
-  _has_bits_[0] &= ~0x00000001u;
-}
-void NotifyReply::clear_deps() {
-  deps_ = 0;
-  clear_has_deps();
-}
- ::google::protobuf::int32 NotifyReply::deps() const {
-  // @@protoc_insertion_point(field_get:dwork.NotifyReply.deps)
-  return deps_;
-}
- void NotifyReply::set_deps(::google::protobuf::int32 value) {
-  set_has_deps();
-  deps_ = value;
-  // @@protoc_insertion_point(field_set:dwork.NotifyReply.deps)
-}
-
-#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
-
-// ===================================================================
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int LookupReply::kLocationFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-LookupReply::LookupReply()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:dwork.LookupReply)
-}
-
-void LookupReply::InitAsDefaultInstance() {
-}
-
-LookupReply::LookupReply(const LookupReply& from)
-  : ::google::protobuf::Message(),
-    _internal_metadata_(NULL) {
-  SharedCtor();
-  MergeFrom(from);
-  // @@protoc_insertion_point(copy_constructor:dwork.LookupReply)
-}
-
-void LookupReply::SharedCtor() {
-  ::google::protobuf::internal::GetEmptyString();
-  _cached_size_ = 0;
-  location_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-}
-
-LookupReply::~LookupReply() {
-  // @@protoc_insertion_point(destructor:dwork.LookupReply)
-  SharedDtor();
-}
-
-void LookupReply::SharedDtor() {
-  location_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (this != default_instance_) {
-  }
-}
-
-void LookupReply::SetCachedSize(int size) const {
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-}
-const ::google::protobuf::Descriptor* LookupReply::descriptor() {
-  protobuf_AssignDescriptorsOnce();
-  return LookupReply_descriptor_;
-}
-
-const LookupReply& LookupReply::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_TaskMsg_2eproto();
-  return *default_instance_;
-}
-
-LookupReply* LookupReply::default_instance_ = NULL;
-
-LookupReply* LookupReply::New(::google::protobuf::Arena* arena) const {
-  LookupReply* n = new LookupReply;
-  if (arena != NULL) {
-    arena->Own(n);
-  }
-  return n;
-}
-
-void LookupReply::Clear() {
-// @@protoc_insertion_point(message_clear_start:dwork.LookupReply)
-  if (has_location()) {
-    location_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  }
-  ::memset(_has_bits_, 0, sizeof(_has_bits_));
-  if (_internal_metadata_.have_unknown_fields()) {
-    mutable_unknown_fields()->Clear();
-  }
-}
-
-bool LookupReply::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:dwork.LookupReply)
-  for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // optional string location = 6;
-      case 6: {
-        if (tag == 50) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_location()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-            this->location().data(), this->location().length(),
-            ::google::protobuf::internal::WireFormat::PARSE,
-            "dwork.LookupReply.location");
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectAtEnd()) goto success;
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0 ||
-            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:dwork.LookupReply)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:dwork.LookupReply)
-  return false;
-#undef DO_
-}
-
-void LookupReply::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:dwork.LookupReply)
-  // optional string location = 6;
-  if (has_location()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->location().data(), this->location().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "dwork.LookupReply.location");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      6, this->location(), output);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        unknown_fields(), output);
-  }
-  // @@protoc_insertion_point(serialize_end:dwork.LookupReply)
-}
-
-::google::protobuf::uint8* LookupReply::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:dwork.LookupReply)
-  // optional string location = 6;
-  if (has_location()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->location().data(), this->location().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "dwork.LookupReply.location");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        6, this->location(), target);
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        unknown_fields(), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:dwork.LookupReply)
-  return target;
-}
-
-int LookupReply::ByteSize() const {
-// @@protoc_insertion_point(message_byte_size_start:dwork.LookupReply)
-  int total_size = 0;
-
-  // optional string location = 6;
-  if (has_location()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->location());
-  }
-
-  if (_internal_metadata_.have_unknown_fields()) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        unknown_fields());
-  }
-  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
-  GOOGLE_SAFE_CONCURRENT_WRITES_END();
-  return total_size;
-}
-
-void LookupReply::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:dwork.LookupReply)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  const LookupReply* source = 
-      ::google::protobuf::internal::DynamicCastToGenerated<const LookupReply>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:dwork.LookupReply)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:dwork.LookupReply)
-    MergeFrom(*source);
-  }
-}
-
-void LookupReply::MergeFrom(const LookupReply& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:dwork.LookupReply)
-  if (GOOGLE_PREDICT_FALSE(&from == this)) {
-    ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
-  }
-  if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_location()) {
-      set_has_location();
-      location_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.location_);
-    }
-  }
-  if (from._internal_metadata_.have_unknown_fields()) {
-    mutable_unknown_fields()->MergeFrom(from.unknown_fields());
-  }
-}
-
-void LookupReply::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:dwork.LookupReply)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void LookupReply::CopyFrom(const LookupReply& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:dwork.LookupReply)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool LookupReply::IsInitialized() const {
-
-  return true;
-}
-
-void LookupReply::Swap(LookupReply* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void LookupReply::InternalSwap(LookupReply* other) {
-  location_.Swap(&other->location_);
-  std::swap(_has_bits_[0], other->_has_bits_[0]);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-  std::swap(_cached_size_, other->_cached_size_);
-}
-
-::google::protobuf::Metadata LookupReply::GetMetadata() const {
-  protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::Metadata metadata;
-  metadata.descriptor = LookupReply_descriptor_;
-  metadata.reflection = LookupReply_reflection_;
-  return metadata;
-}
-
-#if PROTOBUF_INLINE_NOT_IN_HEADERS
-// LookupReply
-
 // optional string location = 6;
-bool LookupReply::has_location() const {
-  return (_has_bits_[0] & 0x00000001u) != 0;
+bool QueryMsg::has_location() const {
+  return (_has_bits_[0] & 0x00000008u) != 0;
 }
-void LookupReply::set_has_location() {
-  _has_bits_[0] |= 0x00000001u;
+void QueryMsg::set_has_location() {
+  _has_bits_[0] |= 0x00000008u;
 }
-void LookupReply::clear_has_location() {
-  _has_bits_[0] &= ~0x00000001u;
+void QueryMsg::clear_has_location() {
+  _has_bits_[0] &= ~0x00000008u;
 }
-void LookupReply::clear_location() {
+void QueryMsg::clear_location() {
   location_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   clear_has_location();
 }
- const ::std::string& LookupReply::location() const {
-  // @@protoc_insertion_point(field_get:dwork.LookupReply.location)
+ const ::std::string& QueryMsg::location() const {
+  // @@protoc_insertion_point(field_get:dwork.QueryMsg.location)
   return location_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void LookupReply::set_location(const ::std::string& value) {
+ void QueryMsg::set_location(const ::std::string& value) {
   set_has_location();
   location_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:dwork.LookupReply.location)
+  // @@protoc_insertion_point(field_set:dwork.QueryMsg.location)
 }
- void LookupReply::set_location(const char* value) {
+ void QueryMsg::set_location(const char* value) {
   set_has_location();
   location_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:dwork.LookupReply.location)
+  // @@protoc_insertion_point(field_set_char:dwork.QueryMsg.location)
 }
- void LookupReply::set_location(const char* value, size_t size) {
+ void QueryMsg::set_location(const char* value, size_t size) {
   set_has_location();
   location_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:dwork.LookupReply.location)
+  // @@protoc_insertion_point(field_set_pointer:dwork.QueryMsg.location)
 }
- ::std::string* LookupReply::mutable_location() {
+ ::std::string* QueryMsg::mutable_location() {
   set_has_location();
-  // @@protoc_insertion_point(field_mutable:dwork.LookupReply.location)
+  // @@protoc_insertion_point(field_mutable:dwork.QueryMsg.location)
   return location_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* LookupReply::release_location() {
-  // @@protoc_insertion_point(field_release:dwork.LookupReply.location)
+ ::std::string* QueryMsg::release_location() {
+  // @@protoc_insertion_point(field_release:dwork.QueryMsg.location)
   clear_has_location();
   return location_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void LookupReply::set_allocated_location(::std::string* location) {
+ void QueryMsg::set_allocated_location(::std::string* location) {
   if (location != NULL) {
     set_has_location();
   } else {
     clear_has_location();
   }
   location_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), location);
-  // @@protoc_insertion_point(field_set_allocated:dwork.LookupReply.location)
+  // @@protoc_insertion_point(field_set_allocated:dwork.QueryMsg.location)
 }
 
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS

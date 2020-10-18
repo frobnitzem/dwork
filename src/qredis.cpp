@@ -5,8 +5,8 @@
 
 int main() {
     Redis r("127.0.0.1", 6379);
-    std::cout << "PING: "
-              << r.cmd({"PING"}) << std::endl;
+    //std::cout << "PING: "
+    //          << r.cmd({"PING"}) << std::endl;
 
     // Set a key
     std::cout << "SET: "
@@ -15,7 +15,7 @@ int main() {
 
     // Try a GET and two INCR
     std::cout << "GET foo: "
-              << r.get("foo")
+              << r.get("foo").value_or("nil")
               << std::endl;
 
     for(int i=0; i<2; i++) {
@@ -30,11 +30,18 @@ int main() {
     for(int j = 0; j < 10; j++) {
         char buf[64];
 
-        snprintf(buf,64,"element-%u",j);
-        r.cmd({"LPUSH", "mylist", buf});
+        snprintf(buf,64,"element %u",j);
+        r.lpush("mylist", buf);
     }
 
     // Let's check what we have inside the list
+    for(int j = 0; j <= 10; j++) {
+        auto ret = r.rpop("mylist");
+        if(!ret.has_value()) {
+            break;
+        }
+        std::cout << j << ": " << ret.value() << std::endl;
+    }
     /*
     reply = redisCommand(c,"LRANGE mylist 0 -1");
     if (reply->type == REDIS_REPLY_ARRAY) {

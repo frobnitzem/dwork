@@ -1,11 +1,13 @@
 #include <string>
 #include <string.h>
 #include <zmq.hpp>
+
+#include <google/protobuf/util/time_util.h>
 #include "proto/TaskMsg.pb.h"
 
 // Send a protobuf over ZeroMQ socket.
 template <typename P>
-void SendProto(zmq::socket_t &socket, P &q) {
+void sendProto(zmq::socket_t &socket, P &q) {
     std::string str;
     q.SerializeToString(&str);
     int sz = str.length();
@@ -17,13 +19,22 @@ void SendProto(zmq::socket_t &socket, P &q) {
 
 // Receive a protobuf over ZeroMQ socket.
 template <typename P>
-P RecvProto(zmq::socket_t &socket) {
-    P pb = P();
+std::optional<P> recvProto(zmq::socket_t &socket) {
     zmq::message_t msg;
     const auto ret = socket.recv(msg, zmq::recv_flags::none);
-    if(ret.has_value()) {
-        //pb.ParseFromString((char*) msg.data());
-        pb.ParseFromArray(msg.data(), msg.size());
+    if(ret.value_or(0) == 0) {
+        return {};
     }
+    P pb;
+    //pb.ParseFromString((char*) msg.data());
+    pb.ParseFromArray(msg.data(), msg.size());
     return pb;
 }
+
+void logTransition(dwork::TaskMsg &task, const dwork::TaskMsg_State &state) {
+    dwork::TaskMsg::LogMsg *log = task.add_log();
+    log->set_state(state);
+    auto time = google::protobuf::util::TimeUtil::GetCurrentTime();
+    log->set_time( google::protobuf::util::TimeUtil::TimestampToMilliseconds(time) );
+}
+
