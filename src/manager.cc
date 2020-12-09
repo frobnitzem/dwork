@@ -10,7 +10,7 @@
 #include <signal.h>
 
 #include "proto.hpp"
-#include "local_db.cpp"
+#include "local_db.cc"
 
 const int num_threads = 4;
 

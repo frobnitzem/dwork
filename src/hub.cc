@@ -76,6 +76,78 @@ zmq::socket_t SubscribeControl(zmq::context_t &context) {
     return control;
 }
 
+void handle_query(dwork::QueryMsg &query, Redis &r) {
+    std::cout << "Received request: " << query.DebugString() << std::endl;
+    switch(query.type()) {
+    case dwork::QueryMsg::Steal: {
+        if(!query.has_name()) { // invalid msg
+            std::cout << "Received invalid Steal() with no hostname." << std::endl;
+            goto err;
+        }
+        auto ret = r.rpop("pending");
+        auto host = query.name();
+        query.clear_name();
+
+        if(!ret.has_value()) // out of work - time to exit
+            goto err;
+        std::string name = std::move(ret.value());
+        // update task-tracking
+        r.sadd(host, name);
+        r.set("tasks/"+name, host);
+
+        // send task
+        query.set_type(dwork::QueryMsg::Transfer);
+        query.clear_task();
+        dwork::TaskMsg *task = query.add_task();
+        task->set_name(name);
+        task->set_origin("hub");
+        //logTransition(task, dwork::TaskMsg::Stolen);
+
+        break;
+    }
+    case dwork::QueryMsg::Transfer: {
+        if(query.task_size() <= 0) {
+            std::cout << "Received invalid Transfer() with no TaskMsg." << std::endl;
+            goto err;
+        }
+        for(const auto task : query.task()) {
+            if(!task.has_location()) {
+                std::cout << "Received invalid Transfer() with no location." << std::endl;
+                goto err;
+            }
+            // TODO: check task->origin
+
+            std::string name(task.name());
+            r.set("done/"+name, task.location());
+
+            auto host = r.get("tasks/"+name);
+            if(host.has_value()) {
+                r.del("tasks/"+name);
+                r.srem(host.value(), name);
+            }
+        }
+        query.set_type(dwork::QueryMsg::OK);
+        //logTransition(task, dwork::TaskMsg::Recorded);
+        //TODO: store task info. to logfile
+        break;
+    }
+    case dwork::QueryMsg::Lookup: {
+        auto loc = r.get("done/"+query.name());
+        if(loc.has_value()) {
+            query.set_type(dwork::QueryMsg::OK);
+            query.set_location(loc.value());
+        } else {
+            query.set_type(dwork::QueryMsg::NotFound);
+        }
+        break;
+    }
+    default:
+    err:
+        query.set_type(dwork::QueryMsg::Exit);
+        break;
+    }
+}
+
 void *WorkerThread(void *arg) {
     Redis r("127.0.0.1", 6379);
     zmq::context_t &context = *(zmq::context_t *) arg;
@@ -102,77 +174,14 @@ void *WorkerThread(void *arg) {
             continue;
         }
 
-        auto query = RecvProto<dwork::QueryMsg>(socket);
-        std::cout << "Received request: " << query.DebugString() << std::endl;
-        switch(query.type()) {
-        case dwork::QueryMsg::Steal: {
-            if(!query.has_name()) { // invalid msg
-                std::cout << "Received invalid Steal() with no hostname." << std::endl;
-                goto err;
-            }
-            auto ret = r.rpop("pending");
-            auto host = query.name();
-            query.clear_name();
-
-            if(!ret.has_value()) // out of work - time to exit
-                goto err;
-            std::string name = std::move(ret.value());
-            // update task-tracking
-            r.sadd(host, name);
-            r.set("tasks/"+name, host);
-
-            // send task
-            query.set_type(dwork::QueryMsg::Transfer);
-            query.clear_task();
-            dwork::TaskMsg *task = query.mutable_task();
-            task->set_name(name);
-            task->set_origin("hub");
-            logTransition(task, dwork::TaskMsg::Stolen);
-
-            break;
+        auto msg = recvProto<dwork::QueryMsg>(socket);
+        if(!msg.has_value()) { // bad query
+            std::cout << "Received bad query." << std::endl;
+            continue;
         }
-        case dwork::QueryMsg::Transfer: {
-            if(!query.has_task()) {
-                std::cout << "Received invalid Transfer() with no TaskMsg." << std::endl;
-                goto err;
-            }
-            dwork::TaskMsg *task = query.mutable_task();
-            if(!task->has_location()) {
-                std::cout << "Received invalid Transfer() with no location." << std::endl;
-                goto err;
-            }
-            // TODO: check task->origin
- 
-            std::string name(task->name());
-            r.set("done/"+name, task->location());
-
-            auto host = r.get("tasks/"+name);
-            if(host.has_value()) {
-                r.del("tasks/"+name);
-                r.srem(host.value(), name);
-            }
-            query.set_type(dwork::QueryMsg::OK);
-            //logTransition(task, dwork::TaskMsg::Recorded);
-            //TODO: store task info. to logfile
-            break;
-        }
-        case dwork::QueryMsg::Lookup: {
-            auto loc = r.get("done/"+query.name());
-            if(loc.has_value()) {
-                query.set_type(dwork::QueryMsg::OK);
-                query.set_location(loc.value());
-            } else {
-                query.set_type(dwork::QueryMsg::NotFound);
-            }
-            break;
-        }
-        default:
-        err:
-            query.set_type(dwork::QueryMsg::Exit);
-            break;
-        }
-
-        SendProto(socket, query);
+        auto &query = msg.value();
+        handle_query(query, r);
+        sendProto(socket, query);
     }
 
     return NULL;

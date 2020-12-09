@@ -1,23 +1,32 @@
 
 include conf.mk
 
-SOURCES = proto/TaskMsg.pb.cc 
+PROTO_OBJS = proto/TaskMsg.pb.o
 
-manager: manager.cpp $(SOURCES)
-	g++ -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
+all: manager hub
 
-hub: hub.cpp $(SOURCES)
-	g++ -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
+manager: manager.o $(PROTO_OBJS)
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+hub: hub.o $(PROTO_OBJS)
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+# test of redis store/load
+qredis: qredis.o
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+#db: local_db.o
+#	$(CXX) -o $@ $^ $(LDFLAGS)
 
 proto/TaskMsg.pb.cc: proto/TaskMsg.proto
 	protoc -I=proto --cpp_out=proto $^
 
-qredis: qredis.cpp
-	g++ -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
-
-db: local_db.cpp
-	g++ -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
-
 clean:
-	rm server
+	rm -f $(PROTO_OBJS)
+	rm manager hub qredis
+
+.SUFFIXES: .cc
+
+.cc.o:
+	$(CXX) -c -o $@ $(CXXFLAGS) $^ $(LDFLAGS)
 
