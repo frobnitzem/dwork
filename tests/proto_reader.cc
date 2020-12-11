@@ -2,7 +2,7 @@
 #include <fstream>
 #include <string>
 
-#include "TaskMsg.pb.h"
+#include <TaskMsg.pb.h>
 using namespace std;
 
 // Iterates though all people in the AddressBook and prints info about them.
