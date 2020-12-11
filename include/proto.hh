@@ -3,7 +3,7 @@
 #include <zmq.hpp>
 
 #include <google/protobuf/util/time_util.h>
-#include "proto/TaskMsg.pb.h"
+#include <TaskMsg.pb.h>
 
 // Send a protobuf over ZeroMQ socket.
 template <typename P>

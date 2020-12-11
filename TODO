@@ -1,0 +1,26 @@
+* remove C lang dependencies (currently used in threading for testing)
+
+* Write documentation!
+
+* Get tests for upstream dependency libraries working again.
+
+* Get cmake to generate the Task protobuf sources.
+
+* Integrate testing into the build / pull request process.
+
+* List out minimal desired API for users of this libary.
+
+x. thread tasks through all phases of runtime
+
+2. create simple test workflow examples
+
+3. codify actor behavior
+
+  - implement QueryMsg / hub interaction
+
+4. implement system health manager
+
+5. implement stage-in copy jobs
+
+6. improve task I/O backend
+

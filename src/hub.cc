@@ -8,8 +8,8 @@
 #include <iostream>
 #include <signal.h>
 
-#include "qredis.hpp"
-#include "proto.hpp"
+#include <qredis.hh>
+#include <proto.hh>
 
 const int num_threads = 4;
 

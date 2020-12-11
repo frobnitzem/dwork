@@ -9,12 +9,9 @@
 #include <deque>
 #include <signal.h>
 
-#include "proto.hpp"
-#include "local_db.cc"
+#include <proto.hh>
 
 const int num_threads = 4;
-
-TaskDB db = TaskDB();
 
 // send non-NULL terminated string
 void sendString(zmq::socket_t &socket, std::string_view x) {

@@ -1,0 +1,9 @@
+#ifndef _DWORK_HH
+#define _DWORK_HH
+
+// the configured options and settings
+#define DWORK_VERSION_MAJOR @dwork_VERSION_MAJOR@
+#define DWORK_VERSION_MINOR @dwork_VERSION_MINOR@
+
+int dwork();
+#endif

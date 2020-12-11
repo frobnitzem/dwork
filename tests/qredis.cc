@@ -1,7 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "qredis.hpp"
+#include "qredis.hh"
+
+void evalMulti(char *argv[]) {
+    std::string command =
+        "local link_id = redis.call(\"INCR\", KEYS[1])"
+        "redis.call(\"HSET\", KEYS[2], link_id, ARGV[1])"
+        "local data = redis.call(\"HGETALL\", KEYS[2])"
+        "return data";
+    string.append( multiCmd );
+
+    redisReply *reply = (redisReply *)redisCommand(ctxt,
+            "EVAL %s %d %s %s %s", command.c_str(), 2, argv[1], argv[2], argv[3]);
+
+}
 
 int main() {
     Redis r("127.0.0.1", 6379);

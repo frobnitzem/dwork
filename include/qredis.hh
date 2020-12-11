@@ -6,7 +6,7 @@
 #include <sys/time.h>
 
 extern "C" {
-#include <hiredis.h>
+#include <hiredis/hiredis.h>
 }
 
 /* Class for making blocking calls to redis. */
