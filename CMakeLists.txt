@@ -25,6 +25,8 @@ find_package(Threads REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(cppzmq REQUIRED)
 find_package(hiredis REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(TKRZW tkrzw REQUIRED IMPORTED_TARGET)
 
 # can't use this, since it doesn't put the generated include file in include/
 #protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS proto/TaskMsg.proto)
@@ -32,7 +34,7 @@ set(PROTO_SRCS proto/TaskMsg.pb.cc)
 set(PROTO_HDRS include/TaskMsg.pb.h)
 
 #####################################################################
-add_library(dwork src/dag.cc ${PROTO_SRCS})
+add_library(dwork src/taskDB.cc src/taskHeap.cc src/dag.cc ${PROTO_SRCS})
 
 add_executable(manager src/manager.cc)
 add_executable(hub src/hub.cc)
@@ -40,7 +42,7 @@ add_executable(hub src/hub.cc)
 
 # library code properties
 
-target_link_libraries(dwork PUBLIC dwork_compiler_flags protobuf::libprotobuf cppzmq hiredis::hiredis Threads::Threads)
+target_link_libraries(dwork PUBLIC dwork_compiler_flags protobuf::libprotobuf cppzmq hiredis::hiredis PkgConfig::TKRZW Threads::Threads)
 target_include_directories(dwork
                            PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -71,9 +73,18 @@ install(TARGETS ${installable_libs}
 
 #####################################################################
 # ATTENTION: add all your library's installed headers to this list  #
-install(FILES "${PROJECT_BINARY_DIR}/include/dwork.hh" DESTINATION include)
-#install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/util.hh" DESTINATION include)
+set(DWORK_HEADERS
+        "${PROJECT_BINARY_DIR}/include/dwork.hh"
+        "${PROTO_HDRS}"
+        include/dag.hh
+        include/dag_thread.h
+        include/proto.hh
+        include/qredis.hh
+        include/taskDB.hh
+        include/taskHeap.hh
+    )
 #####################################################################
+install(FILES ${DWORK_HEADERS} DESTINATION include)
 
 # Note: we choose the following location for cmake dependency info:
 # <prefix>/lib/cmake/dwork/

@@ -284,7 +284,7 @@ static struct TaskList *grow_tasklist(task_t *n, struct TaskList *old) {
 //  returns 0 if `n` is already complete (no addition possible)
 //  or 1 after addition.
 static int add_successor(task_t *n, task_t *s) {
-    struct TaskList *list = std::atomic_load_explicit(&n->successors, std::memory_order::memory_order_relaxed);
+    struct TaskList *list = n->successors.load(std::memory_order::memory_order_relaxed);
     int r = 0;
 
     while(1) {
@@ -300,8 +300,7 @@ static int add_successor(task_t *n, task_t *s) {
 
         // Wait until resize is complete.
         { struct TaskList *old = list;
-          while( (list = std::atomic_load_explicit(&n->successors,
-                          std::memory_order::memory_order_relaxed)) == old);
+          while( (list = n->successors.load(std::memory_order::memory_order_relaxed)) == old);
         }
     };
 

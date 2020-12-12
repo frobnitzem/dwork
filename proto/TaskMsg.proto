@@ -44,6 +44,5 @@ message QueryMsg {
   required Type    type = 1;
   repeated TaskMsg task = 2; // required when type == Notify
   optional string  name = 3; // id to lookup OR hostname doing stealing
-  optional string location = 6; // OR id to lookup OR hostname doing stealing
+  optional string  location = 6; // hostname lookup response OR hostname doing stealing
 }
-

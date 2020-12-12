@@ -16,6 +16,10 @@ struct Task {
     std::atomic<struct TaskList *> successors; // List of dependencies
                                     // (or NULL if node is complete).
     std::atomic<int> joins;
+    Task() : joins(0) {
+    }
+    Task(Task &&) = delete;
+    Task &operator=(Task &) = delete;
 };
 
 /* Callback types */
