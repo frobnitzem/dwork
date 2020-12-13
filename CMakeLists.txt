@@ -5,6 +5,9 @@ cmake_minimum_required(VERSION 3.17)
 project(dwork VERSION 1.0 LANGUAGES CXX C)
 #####################################################################
 
+# Add the cmake folder so the FindSphinx module is found
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
 # Global Options
 add_library(dwork_compiler_flags INTERFACE)
 #####################################################################
@@ -24,7 +27,6 @@ configure_file(include/dwork.hh.in include/dwork.hh)
 find_package(Threads REQUIRED)
 find_package(Protobuf REQUIRED)
 find_package(cppzmq REQUIRED)
-find_package(hiredis REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(TKRZW tkrzw REQUIRED IMPORTED_TARGET)
 
@@ -33,16 +35,17 @@ pkg_search_module(TKRZW tkrzw REQUIRED IMPORTED_TARGET)
 set(PROTO_SRCS proto/TaskMsg.pb.cc)
 set(PROTO_HDRS include/TaskMsg.pb.h)
 
-#####################################################################
+##########  TARGETS  ################################################
 add_library(dwork src/taskDB.cc src/taskHeap.cc src/dag.cc ${PROTO_SRCS})
-
 add_executable(manager src/manager.cc)
-add_executable(hub src/hub.cc)
+add_executable(dhub   src/dhub.cc)
+add_executable(dquery src/dquery.cc)
+add_subdirectory ("docs")
 #####################################################################
 
 # library code properties
 
-target_link_libraries(dwork PUBLIC dwork_compiler_flags protobuf::libprotobuf cppzmq hiredis::hiredis PkgConfig::TKRZW Threads::Threads)
+target_link_libraries(dwork PUBLIC dwork_compiler_flags protobuf::libprotobuf cppzmq PkgConfig::TKRZW Threads::Threads)
 target_include_directories(dwork
                            PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -54,8 +57,9 @@ set_target_properties(dwork PROPERTIES
                       POSITION_INDEPENDENT_CODE ${BUILD_SHARED_LIBS}
                       )
 
-target_link_libraries(manager dwork hiredis::hiredis)
-target_link_libraries(hub dwork hiredis::hiredis)
+target_link_libraries(manager dwork)
+target_link_libraries(dhub   dwork)
+target_link_libraries(dquery dwork)
 
 if(BUILD_TESTS)
   add_subdirectory(tests)
@@ -79,7 +83,6 @@ set(DWORK_HEADERS
         include/dag.hh
         include/dag_thread.h
         include/proto.hh
-        include/qredis.hh
         include/taskDB.hh
         include/taskHeap.hh
     )

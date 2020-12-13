@@ -68,16 +68,18 @@ inline bool TaskMsg_State_Parse(
     TaskMsg_State_descriptor(), name, value);
 }
 enum QueryMsg_Type {
-  QueryMsg_Type_Steal = 0,
-  QueryMsg_Type_Transfer = 1,
-  QueryMsg_Type_Lookup = 2,
-  QueryMsg_Type_NotFound = 3,
-  QueryMsg_Type_Exit = 4,
-  QueryMsg_Type_OK = 5
+  QueryMsg_Type_Create = 0,
+  QueryMsg_Type_Steal = 1,
+  QueryMsg_Type_Transfer = 2,
+  QueryMsg_Type_Lookup = 3,
+  QueryMsg_Type_NotFound = 4,
+  QueryMsg_Type_OK = 5,
+  QueryMsg_Type_Exit = 6,
+  QueryMsg_Type_Error = 7
 };
 bool QueryMsg_Type_IsValid(int value);
-const QueryMsg_Type QueryMsg_Type_Type_MIN = QueryMsg_Type_Steal;
-const QueryMsg_Type QueryMsg_Type_Type_MAX = QueryMsg_Type_OK;
+const QueryMsg_Type QueryMsg_Type_Type_MIN = QueryMsg_Type_Create;
+const QueryMsg_Type QueryMsg_Type_Type_MAX = QueryMsg_Type_Error;
 const int QueryMsg_Type_Type_ARRAYSIZE = QueryMsg_Type_Type_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* QueryMsg_Type_descriptor();
@@ -160,17 +162,17 @@ class TaskMsg_Dep : public ::google::protobuf::Message /* @@protoc_insertion_poi
 
   // accessors -------------------------------------------------------
 
-  // required string id = 1;
-  bool has_id() const;
-  void clear_id();
-  static const int kIdFieldNumber = 1;
-  const ::std::string& id() const;
-  void set_id(const ::std::string& value);
-  void set_id(const char* value);
-  void set_id(const char* value, size_t size);
-  ::std::string* mutable_id();
-  ::std::string* release_id();
-  void set_allocated_id(::std::string* id);
+  // required string name = 1;
+  bool has_name() const;
+  void clear_name();
+  static const int kNameFieldNumber = 1;
+  const ::std::string& name() const;
+  void set_name(const ::std::string& value);
+  void set_name(const char* value);
+  void set_name(const char* value, size_t size);
+  ::std::string* mutable_name();
+  ::std::string* release_name();
+  void set_allocated_name(::std::string* name);
 
   // optional string location = 2;
   bool has_location() const;
@@ -186,15 +188,15 @@ class TaskMsg_Dep : public ::google::protobuf::Message /* @@protoc_insertion_poi
 
   // @@protoc_insertion_point(class_scope:dwork.TaskMsg.Dep)
  private:
-  inline void set_has_id();
-  inline void clear_has_id();
+  inline void set_has_name();
+  inline void clear_has_name();
   inline void set_has_location();
   inline void clear_has_location();
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
-  ::google::protobuf::internal::ArenaStringPtr id_;
+  ::google::protobuf::internal::ArenaStringPtr name_;
   ::google::protobuf::internal::ArenaStringPtr location_;
   friend void  protobuf_AddDesc_TaskMsg_2eproto();
   friend void protobuf_AssignDesc_TaskMsg_2eproto();
@@ -444,18 +446,6 @@ class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::std::string* release_origin();
   void set_allocated_origin(::std::string* origin);
 
-  // optional string location = 3 [default = "alloc"];
-  bool has_location() const;
-  void clear_location();
-  static const int kLocationFieldNumber = 3;
-  const ::std::string& location() const;
-  void set_location(const ::std::string& value);
-  void set_location(const char* value);
-  void set_location(const char* value, size_t size);
-  ::std::string* mutable_location();
-  ::std::string* release_location();
-  void set_allocated_location(::std::string* location);
-
   // repeated .dwork.TaskMsg.Dep pred = 4;
   int pred_size() const;
   void clear_pred();
@@ -498,8 +488,6 @@ class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   inline void clear_has_name();
   inline void set_has_origin();
   inline void clear_has_origin();
-  inline void set_has_location();
-  inline void clear_has_location();
 
   // helper for ByteSize()
   int RequiredFieldsByteSizeFallback() const;
@@ -509,8 +497,6 @@ class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   mutable int _cached_size_;
   ::google::protobuf::internal::ArenaStringPtr name_;
   ::google::protobuf::internal::ArenaStringPtr origin_;
-  static ::std::string* _default_location_;
-  ::google::protobuf::internal::ArenaStringPtr location_;
   ::google::protobuf::RepeatedPtrField< ::dwork::TaskMsg_Dep > pred_;
   ::google::protobuf::RepeatedPtrField< ::dwork::TaskMsg_Dep > succ_;
   ::google::protobuf::RepeatedPtrField< ::dwork::TaskMsg_LogMsg > log_;
@@ -590,6 +576,8 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
   // nested types ----------------------------------------------------
 
   typedef QueryMsg_Type Type;
+  static const Type Create =
+    QueryMsg_Type_Create;
   static const Type Steal =
     QueryMsg_Type_Steal;
   static const Type Transfer =
@@ -598,10 +586,12 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
     QueryMsg_Type_Lookup;
   static const Type NotFound =
     QueryMsg_Type_NotFound;
-  static const Type Exit =
-    QueryMsg_Type_Exit;
   static const Type OK =
     QueryMsg_Type_OK;
+  static const Type Exit =
+    QueryMsg_Type_Exit;
+  static const Type Error =
+    QueryMsg_Type_Error;
   static inline bool Type_IsValid(int value) {
     return QueryMsg_Type_IsValid(value);
   }
@@ -656,6 +646,13 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::std::string* release_name();
   void set_allocated_name(::std::string* name);
 
+  // optional int32 n = 4;
+  bool has_n() const;
+  void clear_n();
+  static const int kNFieldNumber = 4;
+  ::google::protobuf::int32 n() const;
+  void set_n(::google::protobuf::int32 value);
+
   // optional string location = 6;
   bool has_location() const;
   void clear_location();
@@ -674,6 +671,8 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
   inline void clear_has_type();
   inline void set_has_name();
   inline void clear_has_name();
+  inline void set_has_n();
+  inline void clear_has_n();
   inline void set_has_location();
   inline void clear_has_location();
 
@@ -681,9 +680,10 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::RepeatedPtrField< ::dwork::TaskMsg > task_;
+  int type_;
+  ::google::protobuf::int32 n_;
   ::google::protobuf::internal::ArenaStringPtr name_;
   ::google::protobuf::internal::ArenaStringPtr location_;
-  int type_;
   friend void  protobuf_AddDesc_TaskMsg_2eproto();
   friend void protobuf_AssignDesc_TaskMsg_2eproto();
   friend void protobuf_ShutdownFile_TaskMsg_2eproto();
@@ -699,58 +699,58 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
 #if !PROTOBUF_INLINE_NOT_IN_HEADERS
 // TaskMsg_Dep
 
-// required string id = 1;
-inline bool TaskMsg_Dep::has_id() const {
+// required string name = 1;
+inline bool TaskMsg_Dep::has_name() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-inline void TaskMsg_Dep::set_has_id() {
+inline void TaskMsg_Dep::set_has_name() {
   _has_bits_[0] |= 0x00000001u;
 }
-inline void TaskMsg_Dep::clear_has_id() {
+inline void TaskMsg_Dep::clear_has_name() {
   _has_bits_[0] &= ~0x00000001u;
 }
-inline void TaskMsg_Dep::clear_id() {
-  id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_id();
+inline void TaskMsg_Dep::clear_name() {
+  name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_name();
 }
-inline const ::std::string& TaskMsg_Dep::id() const {
-  // @@protoc_insertion_point(field_get:dwork.TaskMsg.Dep.id)
-  return id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+inline const ::std::string& TaskMsg_Dep::name() const {
+  // @@protoc_insertion_point(field_get:dwork.TaskMsg.Dep.name)
+  return name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void TaskMsg_Dep::set_id(const ::std::string& value) {
-  set_has_id();
-  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:dwork.TaskMsg.Dep.id)
+inline void TaskMsg_Dep::set_name(const ::std::string& value) {
+  set_has_name();
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:dwork.TaskMsg.Dep.name)
 }
-inline void TaskMsg_Dep::set_id(const char* value) {
-  set_has_id();
-  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:dwork.TaskMsg.Dep.id)
+inline void TaskMsg_Dep::set_name(const char* value) {
+  set_has_name();
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:dwork.TaskMsg.Dep.name)
 }
-inline void TaskMsg_Dep::set_id(const char* value, size_t size) {
-  set_has_id();
-  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+inline void TaskMsg_Dep::set_name(const char* value, size_t size) {
+  set_has_name();
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:dwork.TaskMsg.Dep.id)
+  // @@protoc_insertion_point(field_set_pointer:dwork.TaskMsg.Dep.name)
 }
-inline ::std::string* TaskMsg_Dep::mutable_id() {
-  set_has_id();
-  // @@protoc_insertion_point(field_mutable:dwork.TaskMsg.Dep.id)
-  return id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+inline ::std::string* TaskMsg_Dep::mutable_name() {
+  set_has_name();
+  // @@protoc_insertion_point(field_mutable:dwork.TaskMsg.Dep.name)
+  return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* TaskMsg_Dep::release_id() {
-  // @@protoc_insertion_point(field_release:dwork.TaskMsg.Dep.id)
-  clear_has_id();
-  return id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+inline ::std::string* TaskMsg_Dep::release_name() {
+  // @@protoc_insertion_point(field_release:dwork.TaskMsg.Dep.name)
+  clear_has_name();
+  return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void TaskMsg_Dep::set_allocated_id(::std::string* id) {
-  if (id != NULL) {
-    set_has_id();
+inline void TaskMsg_Dep::set_allocated_name(::std::string* name) {
+  if (name != NULL) {
+    set_has_name();
   } else {
-    clear_has_id();
+    clear_has_name();
   }
-  id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), id);
-  // @@protoc_insertion_point(field_set_allocated:dwork.TaskMsg.Dep.id)
+  name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
+  // @@protoc_insertion_point(field_set_allocated:dwork.TaskMsg.Dep.name)
 }
 
 // optional string location = 2;
@@ -972,60 +972,6 @@ inline void TaskMsg::set_allocated_origin(::std::string* origin) {
   // @@protoc_insertion_point(field_set_allocated:dwork.TaskMsg.origin)
 }
 
-// optional string location = 3 [default = "alloc"];
-inline bool TaskMsg::has_location() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-inline void TaskMsg::set_has_location() {
-  _has_bits_[0] |= 0x00000004u;
-}
-inline void TaskMsg::clear_has_location() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline void TaskMsg::clear_location() {
-  location_.ClearToDefaultNoArena(_default_location_);
-  clear_has_location();
-}
-inline const ::std::string& TaskMsg::location() const {
-  // @@protoc_insertion_point(field_get:dwork.TaskMsg.location)
-  return location_.GetNoArena(_default_location_);
-}
-inline void TaskMsg::set_location(const ::std::string& value) {
-  set_has_location();
-  location_.SetNoArena(_default_location_, value);
-  // @@protoc_insertion_point(field_set:dwork.TaskMsg.location)
-}
-inline void TaskMsg::set_location(const char* value) {
-  set_has_location();
-  location_.SetNoArena(_default_location_, ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:dwork.TaskMsg.location)
-}
-inline void TaskMsg::set_location(const char* value, size_t size) {
-  set_has_location();
-  location_.SetNoArena(_default_location_,
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:dwork.TaskMsg.location)
-}
-inline ::std::string* TaskMsg::mutable_location() {
-  set_has_location();
-  // @@protoc_insertion_point(field_mutable:dwork.TaskMsg.location)
-  return location_.MutableNoArena(_default_location_);
-}
-inline ::std::string* TaskMsg::release_location() {
-  // @@protoc_insertion_point(field_release:dwork.TaskMsg.location)
-  clear_has_location();
-  return location_.ReleaseNoArena(_default_location_);
-}
-inline void TaskMsg::set_allocated_location(::std::string* location) {
-  if (location != NULL) {
-    set_has_location();
-  } else {
-    clear_has_location();
-  }
-  location_.SetAllocatedNoArena(_default_location_, location);
-  // @@protoc_insertion_point(field_set_allocated:dwork.TaskMsg.location)
-}
-
 // repeated .dwork.TaskMsg.Dep pred = 4;
 inline int TaskMsg::pred_size() const {
   return pred_.size();
@@ -1229,15 +1175,39 @@ inline void QueryMsg::set_allocated_name(::std::string* name) {
   // @@protoc_insertion_point(field_set_allocated:dwork.QueryMsg.name)
 }
 
-// optional string location = 6;
-inline bool QueryMsg::has_location() const {
+// optional int32 n = 4;
+inline bool QueryMsg::has_n() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-inline void QueryMsg::set_has_location() {
+inline void QueryMsg::set_has_n() {
   _has_bits_[0] |= 0x00000008u;
 }
-inline void QueryMsg::clear_has_location() {
+inline void QueryMsg::clear_has_n() {
   _has_bits_[0] &= ~0x00000008u;
+}
+inline void QueryMsg::clear_n() {
+  n_ = 0;
+  clear_has_n();
+}
+inline ::google::protobuf::int32 QueryMsg::n() const {
+  // @@protoc_insertion_point(field_get:dwork.QueryMsg.n)
+  return n_;
+}
+inline void QueryMsg::set_n(::google::protobuf::int32 value) {
+  set_has_n();
+  n_ = value;
+  // @@protoc_insertion_point(field_set:dwork.QueryMsg.n)
+}
+
+// optional string location = 6;
+inline bool QueryMsg::has_location() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+inline void QueryMsg::set_has_location() {
+  _has_bits_[0] |= 0x00000010u;
+}
+inline void QueryMsg::clear_has_location() {
+  _has_bits_[0] &= ~0x00000010u;
 }
 inline void QueryMsg::clear_location() {
   location_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());

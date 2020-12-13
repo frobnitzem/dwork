@@ -47,10 +47,9 @@ void protobuf_AssignDesc_TaskMsg_2eproto() {
       "TaskMsg.proto");
   GOOGLE_CHECK(file != NULL);
   TaskMsg_descriptor_ = file->message_type(0);
-  static const int TaskMsg_offsets_[6] = {
+  static const int TaskMsg_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TaskMsg, name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TaskMsg, origin_),
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TaskMsg, location_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TaskMsg, pred_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TaskMsg, succ_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TaskMsg, log_),
@@ -68,7 +67,7 @@ void protobuf_AssignDesc_TaskMsg_2eproto() {
       -1);
   TaskMsg_Dep_descriptor_ = TaskMsg_descriptor_->nested_type(0);
   static const int TaskMsg_Dep_offsets_[2] = {
-    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TaskMsg_Dep, id_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TaskMsg_Dep, name_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TaskMsg_Dep, location_),
   };
   TaskMsg_Dep_reflection_ =
@@ -100,10 +99,11 @@ void protobuf_AssignDesc_TaskMsg_2eproto() {
       -1);
   TaskMsg_State_descriptor_ = TaskMsg_descriptor_->enum_type(0);
   QueryMsg_descriptor_ = file->message_type(1);
-  static const int QueryMsg_offsets_[4] = {
+  static const int QueryMsg_offsets_[5] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryMsg, type_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryMsg, task_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryMsg, name_),
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryMsg, n_),
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(QueryMsg, location_),
   };
   QueryMsg_reflection_ =
@@ -146,7 +146,6 @@ void protobuf_RegisterTypes(const ::std::string&) {
 void protobuf_ShutdownFile_TaskMsg_2eproto() {
   delete TaskMsg::default_instance_;
   delete TaskMsg_reflection_;
-  delete TaskMsg::_default_location_;
   delete TaskMsg_Dep::default_instance_;
   delete TaskMsg_Dep_reflection_;
   delete TaskMsg_LogMsg::default_instance_;
@@ -163,25 +162,23 @@ void protobuf_AddDesc_TaskMsg_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-    "\n\rTaskMsg.proto\022\005dwork\"\366\002\n\007TaskMsg\022\014\n\004na"
-    "me\030\001 \002(\t\022\016\n\006origin\030\002 \002(\t\022\027\n\010location\030\003 \001"
-    "(\t:\005alloc\022 \n\004pred\030\004 \003(\0132\022.dwork.TaskMsg."
-    "Dep\022 \n\004succ\030\005 \003(\0132\022.dwork.TaskMsg.Dep\022\"\n"
-    "\003log\030\006 \003(\0132\025.dwork.TaskMsg.LogMsg\032#\n\003Dep"
-    "\022\n\n\002id\030\001 \002(\t\022\020\n\010location\030\002 \001(\t\032;\n\006LogMsg"
-    "\022#\n\005state\030\001 \002(\0162\024.dwork.TaskMsg.State\022\014\n"
-    "\004time\030\002 \002(\003\"j\n\005State\022\013\n\007Pending\020\000\022\n\n\006Sto"
-    "len\020\001\022\013\n\007Waiting\020\002\022\013\n\007Copying\020\003\022\t\n\005Ready"
-    "\020\004\022\013\n\007Started\020\005\022\010\n\004Done\020\006\022\014\n\010Recorded\020\007\""
-    "\271\001\n\010QueryMsg\022\"\n\004type\030\001 \002(\0162\024.dwork.Query"
-    "Msg.Type\022\034\n\004task\030\002 \003(\0132\016.dwork.TaskMsg\022\014"
-    "\n\004name\030\003 \001(\t\022\020\n\010location\030\006 \001(\t\"K\n\004Type\022\t"
-    "\n\005Steal\020\000\022\014\n\010Transfer\020\001\022\n\n\006Lookup\020\002\022\014\n\010N"
-    "otFound\020\003\022\010\n\004Exit\020\004\022\006\n\002OK\020\005", 587);
+    "\n\rTaskMsg.proto\022\005dwork\"\337\002\n\007TaskMsg\022\014\n\004na"
+    "me\030\001 \002(\t\022\016\n\006origin\030\002 \002(\t\022 \n\004pred\030\004 \003(\0132\022"
+    ".dwork.TaskMsg.Dep\022 \n\004succ\030\005 \003(\0132\022.dwork"
+    ".TaskMsg.Dep\022\"\n\003log\030\006 \003(\0132\025.dwork.TaskMs"
+    "g.LogMsg\032%\n\003Dep\022\014\n\004name\030\001 \002(\t\022\020\n\010locatio"
+    "n\030\002 \001(\t\032;\n\006LogMsg\022#\n\005state\030\001 \002(\0162\024.dwork"
+    ".TaskMsg.State\022\014\n\004time\030\002 \002(\003\"j\n\005State\022\013\n"
+    "\007Pending\020\000\022\n\n\006Stolen\020\001\022\013\n\007Waiting\020\002\022\013\n\007C"
+    "opying\020\003\022\t\n\005Ready\020\004\022\013\n\007Started\020\005\022\010\n\004Done"
+    "\020\006\022\014\n\010Recorded\020\007\"\333\001\n\010QueryMsg\022\"\n\004type\030\001 "
+    "\002(\0162\024.dwork.QueryMsg.Type\022\034\n\004task\030\002 \003(\0132"
+    "\016.dwork.TaskMsg\022\014\n\004name\030\003 \001(\t\022\t\n\001n\030\004 \001(\005"
+    "\022\020\n\010location\030\006 \001(\t\"b\n\004Type\022\n\n\006Create\020\000\022\t"
+    "\n\005Steal\020\001\022\014\n\010Transfer\020\002\022\n\n\006Lookup\020\003\022\014\n\010N"
+    "otFound\020\004\022\006\n\002OK\020\005\022\010\n\004Exit\020\006\022\t\n\005Error\020\007", 598);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "TaskMsg.proto", &protobuf_RegisterTypes);
-  TaskMsg::_default_location_ =
-      new ::std::string("alloc", 5);
   TaskMsg::default_instance_ = new TaskMsg();
   TaskMsg_Dep::default_instance_ = new TaskMsg_Dep();
   TaskMsg_LogMsg::default_instance_ = new TaskMsg_LogMsg();
@@ -236,7 +233,7 @@ const TaskMsg_State TaskMsg::State_MAX;
 const int TaskMsg::State_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int TaskMsg_Dep::kIdFieldNumber;
+const int TaskMsg_Dep::kNameFieldNumber;
 const int TaskMsg_Dep::kLocationFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -260,7 +257,7 @@ TaskMsg_Dep::TaskMsg_Dep(const TaskMsg_Dep& from)
 void TaskMsg_Dep::SharedCtor() {
   ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
-  id_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   location_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -271,7 +268,7 @@ TaskMsg_Dep::~TaskMsg_Dep() {
 }
 
 void TaskMsg_Dep::SharedDtor() {
-  id_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   location_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != default_instance_) {
   }
@@ -305,8 +302,8 @@ TaskMsg_Dep* TaskMsg_Dep::New(::google::protobuf::Arena* arena) const {
 void TaskMsg_Dep::Clear() {
 // @@protoc_insertion_point(message_clear_start:dwork.TaskMsg.Dep)
   if (_has_bits_[0 / 32] & 3u) {
-    if (has_id()) {
-      id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+    if (has_name()) {
+      name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
     if (has_location()) {
       location_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -328,15 +325,15 @@ bool TaskMsg_Dep::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // required string id = 1;
+      // required string name = 1;
       case 1: {
         if (tag == 10) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_id()));
+                input, this->mutable_name()));
           ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-            this->id().data(), this->id().length(),
+            this->name().data(), this->name().length(),
             ::google::protobuf::internal::WireFormat::PARSE,
-            "dwork.TaskMsg.Dep.id");
+            "dwork.TaskMsg.Dep.name");
         } else {
           goto handle_unusual;
         }
@@ -386,14 +383,14 @@ failure:
 void TaskMsg_Dep::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
   // @@protoc_insertion_point(serialize_start:dwork.TaskMsg.Dep)
-  // required string id = 1;
-  if (has_id()) {
+  // required string name = 1;
+  if (has_name()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->id().data(), this->id().length(),
+      this->name().data(), this->name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "dwork.TaskMsg.Dep.id");
+      "dwork.TaskMsg.Dep.name");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->id(), output);
+      1, this->name(), output);
   }
 
   // optional string location = 2;
@@ -416,15 +413,15 @@ void TaskMsg_Dep::SerializeWithCachedSizes(
 ::google::protobuf::uint8* TaskMsg_Dep::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   // @@protoc_insertion_point(serialize_to_array_start:dwork.TaskMsg.Dep)
-  // required string id = 1;
-  if (has_id()) {
+  // required string name = 1;
+  if (has_name()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->id().data(), this->id().length(),
+      this->name().data(), this->name().length(),
       ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "dwork.TaskMsg.Dep.id");
+      "dwork.TaskMsg.Dep.name");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->id(), target);
+        1, this->name(), target);
   }
 
   // optional string location = 2;
@@ -450,11 +447,11 @@ int TaskMsg_Dep::ByteSize() const {
 // @@protoc_insertion_point(message_byte_size_start:dwork.TaskMsg.Dep)
   int total_size = 0;
 
-  // required string id = 1;
-  if (has_id()) {
+  // required string name = 1;
+  if (has_name()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->id());
+        this->name());
   }
   // optional string location = 2;
   if (has_location()) {
@@ -497,9 +494,9 @@ void TaskMsg_Dep::MergeFrom(const TaskMsg_Dep& from) {
     ::google::protobuf::internal::MergeFromFail(__FILE__, __LINE__);
   }
   if (from._has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    if (from.has_id()) {
-      set_has_id();
-      id_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.id_);
+    if (from.has_name()) {
+      set_has_name();
+      name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.name_);
     }
     if (from.has_location()) {
       set_has_location();
@@ -536,7 +533,7 @@ void TaskMsg_Dep::Swap(TaskMsg_Dep* other) {
   InternalSwap(other);
 }
 void TaskMsg_Dep::InternalSwap(TaskMsg_Dep* other) {
-  id_.Swap(&other->id_);
+  name_.Swap(&other->name_);
   location_.Swap(&other->location_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -881,11 +878,9 @@ void TaskMsg_LogMsg::InternalSwap(TaskMsg_LogMsg* other) {
 
 // -------------------------------------------------------------------
 
-::std::string* TaskMsg::_default_location_ = NULL;
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int TaskMsg::kNameFieldNumber;
 const int TaskMsg::kOriginFieldNumber;
-const int TaskMsg::kLocationFieldNumber;
 const int TaskMsg::kPredFieldNumber;
 const int TaskMsg::kSuccFieldNumber;
 const int TaskMsg::kLogFieldNumber;
@@ -913,7 +908,6 @@ void TaskMsg::SharedCtor() {
   _cached_size_ = 0;
   name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   origin_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  location_.UnsafeSetDefault(_default_location_);
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
@@ -925,7 +919,6 @@ TaskMsg::~TaskMsg() {
 void TaskMsg::SharedDtor() {
   name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   origin_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  location_.DestroyNoArena(_default_location_);
   if (this != default_instance_) {
   }
 }
@@ -957,15 +950,12 @@ TaskMsg* TaskMsg::New(::google::protobuf::Arena* arena) const {
 
 void TaskMsg::Clear() {
 // @@protoc_insertion_point(message_clear_start:dwork.TaskMsg)
-  if (_has_bits_[0 / 32] & 7u) {
+  if (_has_bits_[0 / 32] & 3u) {
     if (has_name()) {
       name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
     if (has_origin()) {
       origin_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-    }
-    if (has_location()) {
-      location_.ClearToDefaultNoArena(_default_location_);
     }
   }
   pred_.Clear();
@@ -1013,23 +1003,6 @@ bool TaskMsg::MergePartialFromCodedStream(
             this->origin().data(), this->origin().length(),
             ::google::protobuf::internal::WireFormat::PARSE,
             "dwork.TaskMsg.origin");
-        } else {
-          goto handle_unusual;
-        }
-        if (input->ExpectTag(26)) goto parse_location;
-        break;
-      }
-
-      // optional string location = 3 [default = "alloc"];
-      case 3: {
-        if (tag == 26) {
-         parse_location:
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_location()));
-          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-            this->location().data(), this->location().length(),
-            ::google::protobuf::internal::WireFormat::PARSE,
-            "dwork.TaskMsg.location");
         } else {
           goto handle_unusual;
         }
@@ -1131,16 +1104,6 @@ void TaskMsg::SerializeWithCachedSizes(
       2, this->origin(), output);
   }
 
-  // optional string location = 3 [default = "alloc"];
-  if (has_location()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->location().data(), this->location().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "dwork.TaskMsg.location");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      3, this->location(), output);
-  }
-
   // repeated .dwork.TaskMsg.Dep pred = 4;
   for (unsigned int i = 0, n = this->pred_size(); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
@@ -1189,17 +1152,6 @@ void TaskMsg::SerializeWithCachedSizes(
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->origin(), target);
-  }
-
-  // optional string location = 3 [default = "alloc"];
-  if (has_location()) {
-    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
-      this->location().data(), this->location().length(),
-      ::google::protobuf::internal::WireFormat::SERIALIZE,
-      "dwork.TaskMsg.location");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        3, this->location(), target);
   }
 
   // repeated .dwork.TaskMsg.Dep pred = 4;
@@ -1269,13 +1221,6 @@ int TaskMsg::ByteSize() const {
   } else {
     total_size += RequiredFieldsByteSizeFallback();
   }
-  // optional string location = 3 [default = "alloc"];
-  if (has_location()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->location());
-  }
-
   // repeated .dwork.TaskMsg.Dep pred = 4;
   total_size += 1 * this->pred_size();
   for (int i = 0; i < this->pred_size(); i++) {
@@ -1345,10 +1290,6 @@ void TaskMsg::MergeFrom(const TaskMsg& from) {
       set_has_origin();
       origin_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.origin_);
     }
-    if (from.has_location()) {
-      set_has_location();
-      location_.AssignWithDefault(_default_location_, from.location_);
-    }
   }
   if (from._internal_metadata_.have_unknown_fields()) {
     mutable_unknown_fields()->MergeFrom(from.unknown_fields());
@@ -1385,7 +1326,6 @@ void TaskMsg::Swap(TaskMsg* other) {
 void TaskMsg::InternalSwap(TaskMsg* other) {
   name_.Swap(&other->name_);
   origin_.Swap(&other->origin_);
-  location_.Swap(&other->location_);
   pred_.UnsafeArenaSwap(&other->pred_);
   succ_.UnsafeArenaSwap(&other->succ_);
   log_.UnsafeArenaSwap(&other->log_);
@@ -1405,58 +1345,58 @@ void TaskMsg::InternalSwap(TaskMsg* other) {
 #if PROTOBUF_INLINE_NOT_IN_HEADERS
 // TaskMsg_Dep
 
-// required string id = 1;
-bool TaskMsg_Dep::has_id() const {
+// required string name = 1;
+bool TaskMsg_Dep::has_name() const {
   return (_has_bits_[0] & 0x00000001u) != 0;
 }
-void TaskMsg_Dep::set_has_id() {
+void TaskMsg_Dep::set_has_name() {
   _has_bits_[0] |= 0x00000001u;
 }
-void TaskMsg_Dep::clear_has_id() {
+void TaskMsg_Dep::clear_has_name() {
   _has_bits_[0] &= ~0x00000001u;
 }
-void TaskMsg_Dep::clear_id() {
-  id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  clear_has_id();
+void TaskMsg_Dep::clear_name() {
+  name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  clear_has_name();
 }
- const ::std::string& TaskMsg_Dep::id() const {
-  // @@protoc_insertion_point(field_get:dwork.TaskMsg.Dep.id)
-  return id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ const ::std::string& TaskMsg_Dep::name() const {
+  // @@protoc_insertion_point(field_get:dwork.TaskMsg.Dep.name)
+  return name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void TaskMsg_Dep::set_id(const ::std::string& value) {
-  set_has_id();
-  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:dwork.TaskMsg.Dep.id)
+ void TaskMsg_Dep::set_name(const ::std::string& value) {
+  set_has_name();
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:dwork.TaskMsg.Dep.name)
 }
- void TaskMsg_Dep::set_id(const char* value) {
-  set_has_id();
-  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:dwork.TaskMsg.Dep.id)
+ void TaskMsg_Dep::set_name(const char* value) {
+  set_has_name();
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:dwork.TaskMsg.Dep.name)
 }
- void TaskMsg_Dep::set_id(const char* value, size_t size) {
-  set_has_id();
-  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+ void TaskMsg_Dep::set_name(const char* value, size_t size) {
+  set_has_name();
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:dwork.TaskMsg.Dep.id)
+  // @@protoc_insertion_point(field_set_pointer:dwork.TaskMsg.Dep.name)
 }
- ::std::string* TaskMsg_Dep::mutable_id() {
-  set_has_id();
-  // @@protoc_insertion_point(field_mutable:dwork.TaskMsg.Dep.id)
-  return id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ ::std::string* TaskMsg_Dep::mutable_name() {
+  set_has_name();
+  // @@protoc_insertion_point(field_mutable:dwork.TaskMsg.Dep.name)
+  return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* TaskMsg_Dep::release_id() {
-  // @@protoc_insertion_point(field_release:dwork.TaskMsg.Dep.id)
-  clear_has_id();
-  return id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+ ::std::string* TaskMsg_Dep::release_name() {
+  // @@protoc_insertion_point(field_release:dwork.TaskMsg.Dep.name)
+  clear_has_name();
+  return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void TaskMsg_Dep::set_allocated_id(::std::string* id) {
-  if (id != NULL) {
-    set_has_id();
+ void TaskMsg_Dep::set_allocated_name(::std::string* name) {
+  if (name != NULL) {
+    set_has_name();
   } else {
-    clear_has_id();
+    clear_has_name();
   }
-  id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), id);
-  // @@protoc_insertion_point(field_set_allocated:dwork.TaskMsg.Dep.id)
+  name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
+  // @@protoc_insertion_point(field_set_allocated:dwork.TaskMsg.Dep.name)
 }
 
 // optional string location = 2;
@@ -1678,60 +1618,6 @@ void TaskMsg::clear_origin() {
   // @@protoc_insertion_point(field_set_allocated:dwork.TaskMsg.origin)
 }
 
-// optional string location = 3 [default = "alloc"];
-bool TaskMsg::has_location() const {
-  return (_has_bits_[0] & 0x00000004u) != 0;
-}
-void TaskMsg::set_has_location() {
-  _has_bits_[0] |= 0x00000004u;
-}
-void TaskMsg::clear_has_location() {
-  _has_bits_[0] &= ~0x00000004u;
-}
-void TaskMsg::clear_location() {
-  location_.ClearToDefaultNoArena(_default_location_);
-  clear_has_location();
-}
- const ::std::string& TaskMsg::location() const {
-  // @@protoc_insertion_point(field_get:dwork.TaskMsg.location)
-  return location_.GetNoArena(_default_location_);
-}
- void TaskMsg::set_location(const ::std::string& value) {
-  set_has_location();
-  location_.SetNoArena(_default_location_, value);
-  // @@protoc_insertion_point(field_set:dwork.TaskMsg.location)
-}
- void TaskMsg::set_location(const char* value) {
-  set_has_location();
-  location_.SetNoArena(_default_location_, ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:dwork.TaskMsg.location)
-}
- void TaskMsg::set_location(const char* value, size_t size) {
-  set_has_location();
-  location_.SetNoArena(_default_location_,
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:dwork.TaskMsg.location)
-}
- ::std::string* TaskMsg::mutable_location() {
-  set_has_location();
-  // @@protoc_insertion_point(field_mutable:dwork.TaskMsg.location)
-  return location_.MutableNoArena(_default_location_);
-}
- ::std::string* TaskMsg::release_location() {
-  // @@protoc_insertion_point(field_release:dwork.TaskMsg.location)
-  clear_has_location();
-  return location_.ReleaseNoArena(_default_location_);
-}
- void TaskMsg::set_allocated_location(::std::string* location) {
-  if (location != NULL) {
-    set_has_location();
-  } else {
-    clear_has_location();
-  }
-  location_.SetAllocatedNoArena(_default_location_, location);
-  // @@protoc_insertion_point(field_set_allocated:dwork.TaskMsg.location)
-}
-
 // repeated .dwork.TaskMsg.Dep pred = 4;
 int TaskMsg::pred_size() const {
   return pred_.size();
@@ -1838,6 +1724,8 @@ bool QueryMsg_Type_IsValid(int value) {
     case 3:
     case 4:
     case 5:
+    case 6:
+    case 7:
       return true;
     default:
       return false;
@@ -1845,12 +1733,14 @@ bool QueryMsg_Type_IsValid(int value) {
 }
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
+const QueryMsg_Type QueryMsg::Create;
 const QueryMsg_Type QueryMsg::Steal;
 const QueryMsg_Type QueryMsg::Transfer;
 const QueryMsg_Type QueryMsg::Lookup;
 const QueryMsg_Type QueryMsg::NotFound;
-const QueryMsg_Type QueryMsg::Exit;
 const QueryMsg_Type QueryMsg::OK;
+const QueryMsg_Type QueryMsg::Exit;
+const QueryMsg_Type QueryMsg::Error;
 const QueryMsg_Type QueryMsg::Type_MIN;
 const QueryMsg_Type QueryMsg::Type_MAX;
 const int QueryMsg::Type_ARRAYSIZE;
@@ -1859,6 +1749,7 @@ const int QueryMsg::Type_ARRAYSIZE;
 const int QueryMsg::kTypeFieldNumber;
 const int QueryMsg::kTaskFieldNumber;
 const int QueryMsg::kNameFieldNumber;
+const int QueryMsg::kNFieldNumber;
 const int QueryMsg::kLocationFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -1884,6 +1775,7 @@ void QueryMsg::SharedCtor() {
   _cached_size_ = 0;
   type_ = 0;
   name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  n_ = 0;
   location_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
@@ -1927,8 +1819,24 @@ QueryMsg* QueryMsg::New(::google::protobuf::Arena* arena) const {
 
 void QueryMsg::Clear() {
 // @@protoc_insertion_point(message_clear_start:dwork.QueryMsg)
-  if (_has_bits_[0 / 32] & 13u) {
-    type_ = 0;
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(QueryMsg, f) \
+  _Pragma("clang diagnostic pop")
+#else
+#define ZR_HELPER_(f) reinterpret_cast<char*>(\
+  &reinterpret_cast<QueryMsg*>(16)->f)
+#endif
+
+#define ZR_(first, last) do {\
+  ::memset(&first, 0,\
+           ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
+} while (0)
+
+  if (_has_bits_[0 / 32] & 29u) {
+    ZR_(type_, n_);
     if (has_name()) {
       name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
@@ -1936,6 +1844,10 @@ void QueryMsg::Clear() {
       location_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
     }
   }
+
+#undef ZR_HELPER_
+#undef ZR_
+
   task_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1999,6 +1911,21 @@ bool QueryMsg::MergePartialFromCodedStream(
             this->name().data(), this->name().length(),
             ::google::protobuf::internal::WireFormat::PARSE,
             "dwork.QueryMsg.name");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(32)) goto parse_n;
+        break;
+      }
+
+      // optional int32 n = 4;
+      case 4: {
+        if (tag == 32) {
+         parse_n:
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &n_)));
+          set_has_n();
         } else {
           goto handle_unusual;
         }
@@ -2070,6 +1997,11 @@ void QueryMsg::SerializeWithCachedSizes(
       3, this->name(), output);
   }
 
+  // optional int32 n = 4;
+  if (has_n()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->n(), output);
+  }
+
   // optional string location = 6;
   if (has_location()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
@@ -2114,6 +2046,11 @@ void QueryMsg::SerializeWithCachedSizes(
         3, this->name(), target);
   }
 
+  // optional int32 n = 4;
+  if (has_n()) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(4, this->n(), target);
+  }
+
   // optional string location = 6;
   if (has_location()) {
     ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
@@ -2142,12 +2079,19 @@ int QueryMsg::ByteSize() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
   }
-  if (_has_bits_[2 / 32] & 12u) {
+  if (_has_bits_[2 / 32] & 28u) {
     // optional string name = 3;
     if (has_name()) {
       total_size += 1 +
         ::google::protobuf::internal::WireFormatLite::StringSize(
           this->name());
+    }
+
+    // optional int32 n = 4;
+    if (has_n()) {
+      total_size += 1 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->n());
     }
 
     // optional string location = 6;
@@ -2208,6 +2152,9 @@ void QueryMsg::MergeFrom(const QueryMsg& from) {
       set_has_name();
       name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.name_);
     }
+    if (from.has_n()) {
+      set_n(from.n());
+    }
     if (from.has_location()) {
       set_has_location();
       location_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.location_);
@@ -2247,6 +2194,7 @@ void QueryMsg::InternalSwap(QueryMsg* other) {
   std::swap(type_, other->type_);
   task_.UnsafeArenaSwap(&other->task_);
   name_.Swap(&other->name_);
+  std::swap(n_, other->n_);
   location_.Swap(&other->location_);
   std::swap(_has_bits_[0], other->_has_bits_[0]);
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -2373,15 +2321,39 @@ void QueryMsg::clear_name() {
   // @@protoc_insertion_point(field_set_allocated:dwork.QueryMsg.name)
 }
 
-// optional string location = 6;
-bool QueryMsg::has_location() const {
+// optional int32 n = 4;
+bool QueryMsg::has_n() const {
   return (_has_bits_[0] & 0x00000008u) != 0;
 }
-void QueryMsg::set_has_location() {
+void QueryMsg::set_has_n() {
   _has_bits_[0] |= 0x00000008u;
 }
-void QueryMsg::clear_has_location() {
+void QueryMsg::clear_has_n() {
   _has_bits_[0] &= ~0x00000008u;
+}
+void QueryMsg::clear_n() {
+  n_ = 0;
+  clear_has_n();
+}
+ ::google::protobuf::int32 QueryMsg::n() const {
+  // @@protoc_insertion_point(field_get:dwork.QueryMsg.n)
+  return n_;
+}
+ void QueryMsg::set_n(::google::protobuf::int32 value) {
+  set_has_n();
+  n_ = value;
+  // @@protoc_insertion_point(field_set:dwork.QueryMsg.n)
+}
+
+// optional string location = 6;
+bool QueryMsg::has_location() const {
+  return (_has_bits_[0] & 0x00000010u) != 0;
+}
+void QueryMsg::set_has_location() {
+  _has_bits_[0] |= 0x00000010u;
+}
+void QueryMsg::clear_has_location() {
+  _has_bits_[0] &= ~0x00000010u;
 }
 void QueryMsg::clear_location() {
   location_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());

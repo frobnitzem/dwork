@@ -5,7 +5,7 @@
 #include <google/protobuf/util/time_util.h>
 #include <TaskMsg.pb.h>
 
-// Send a protobuf over ZeroMQ socket.
+/** Send a protobuf over ZeroMQ socket. */
 template <typename P>
 void sendProto(zmq::socket_t &socket, P &q) {
     std::string str;
@@ -31,8 +31,8 @@ std::optional<P> recvProto(zmq::socket_t &socket) {
     return pb;
 }
 
-void logTransition(dwork::TaskMsg &task, const dwork::TaskMsg_State &state) {
-    dwork::TaskMsg::LogMsg *log = task.add_log();
+void logTransition(dwork::TaskMsg *task, const dwork::TaskMsg_State &state) {
+    dwork::TaskMsg::LogMsg *log = task->add_log();
     log->set_state(state);
     auto time = google::protobuf::util::TimeUtil::GetCurrentTime();
     log->set_time( google::protobuf::util::TimeUtil::TimestampToMilliseconds(time) );

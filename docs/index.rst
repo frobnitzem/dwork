@@ -1,10 +1,12 @@
-dwork project
-############
+dwork - distributed work scheduler
+==================================
 
-This library implements the `dwork` function, which
-always returns 0.
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
 
-Usage::
+   messaging
+   libdwork
 
-   dwork()
+:ref:`genindex`
 

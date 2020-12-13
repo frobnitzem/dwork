@@ -40,7 +40,7 @@ class Manager {
             dwork::TaskMsg task;
             task.set_name("step");
             task.set_origin("localhost");
-            logTransition(task, dwork::TaskMsg::Ready);
+            logTransition(&task, dwork::TaskMsg::Ready);
             ready.push_back( task );
         }
     };
@@ -73,7 +73,7 @@ class Manager {
             // TODO: try work stealing (need root
             //    set counters to terminate correctly)
         }
-        logTransition(task, dwork::TaskMsg::Stolen);
+        logTransition(&task, dwork::TaskMsg::Stolen);
         ready.push_back( task );
         */
         return true;
@@ -86,7 +86,7 @@ class Manager {
                 return false;
             }
         }
-        ready.back().Swap( ret);
+        ready.back().Swap( ret );
         ready.pop_back();
         return true;
     }
@@ -103,7 +103,7 @@ class Manager {
             }*/
             // FIXME: handle non-local returns
         }
-        logTransition(t, dwork::TaskMsg::Recorded);
+        logTransition(&t, dwork::TaskMsg::Recorded);
     }
     void removeDep(std::string_view id) {
     }
@@ -111,7 +111,7 @@ class Manager {
 };
 
 void *run_task(dwork::TaskMsg &task) {
-    logTransition(task, dwork::TaskMsg::Started);
+    logTransition(&task, dwork::TaskMsg::Started);
     /*switch(task->type) {
     case COPY:
     case RUN:
@@ -144,7 +144,7 @@ void *WorkerThread(void *arg) {
 
         void *ans = run_task(task);
         //db.set(task, ans); // TODO
-        logTransition(task, dwork::TaskMsg::Done);
+        logTransition(&task, dwork::TaskMsg::Done);
     }
 
     return NULL;

@@ -9,7 +9,6 @@ endfunction(do_test)
 
 do_test(dtest)
 do_test(rtest)
-do_test(qredis)
 do_test(proto_writer out.pb)
 do_test(taskHeap)
 do_test(taskDB)

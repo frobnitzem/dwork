@@ -60,5 +60,7 @@ int main(int argc, char *argv[]) {
     check("X starts", start.size() < 4 || start[3].compare("X"));
     check("All tasks started", start.size() != 4);
 
+    check("one active task", db.TH.active() != 1);
+
     return errors;
 }
