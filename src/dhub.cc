@@ -292,7 +292,7 @@ int Hub::handle_query(dwork::QueryMsg &query) {
             std::string name;
             if( mgr.assign(&name, host) )
                 break;
-            std::cout << "Host " << host << " stealing task " << name << std::endl;
+            //std::cout << "Host " << host << " stealing task " << name << std::endl;
 
             // send task
             dwork::TaskMsg *task = query.add_task();

@@ -40,6 +40,10 @@ int sendrecv(zmq::socket_t &hub, dwork::QueryMsg &query, bool show=true) {
         std::cout << "Received:" << std::endl
                   << resp.value().DebugString() << std::endl;
 
+    query.clear_location();
+    query.clear_task();
+    query.clear_n();
+
     return 0;
 }
 
