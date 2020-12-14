@@ -5,12 +5,40 @@
 #include <unistd.h>
 #include <cassert>
 #include <iostream>
+#include <fstream>
 #include <stdio.h>
+#include <string>
 
+#include <tkrzw_str_util.h>
 #include <proto.hh>
 
-int sendrecv(zmq::socket_t &hub, dwork::QueryMsg &query) {
-    std::cout << "Sending:" << std::endl << query.DebugString() << std::endl;
+dwork::TaskMsg *new_task(dwork::QueryMsg &query, const std::string &name) {
+    dwork::TaskMsg *task = query.add_task();
+
+    char hostname[256];
+    if(gethostname(hostname, sizeof(hostname))) {
+        perror("Error in gethostname");
+        exit(1);
+    }
+    task->set_origin(hostname);
+    task->set_name(name);
+
+    return task;
+}
+
+int sendrecv(zmq::socket_t &hub, dwork::QueryMsg &query, bool show=true) {
+    if(show)
+        std::cout << "Sending:" << std::endl
+                  << query.DebugString() << std::endl;
+    sendProto(hub, query);
+    auto resp = recvProto<dwork::QueryMsg>(hub);
+    if(!resp.has_value()) {
+        std::cout << "Received unparsable query." << std::endl;
+        return 1;
+    }
+    if(show)
+        std::cout << "Received:" << std::endl
+                  << resp.value().DebugString() << std::endl;
 
     return 0;
 }
@@ -20,11 +48,10 @@ int create(zmq::socket_t &hub, int argc, char *argv[]) {
         std::cout << "Error in " << argv[1] << ": task name required." << std::endl;
         return 1;
     }
-    dwork::QueryMsg query;
-    dwork::TaskMsg *task = query.add_task();
 
+    dwork::QueryMsg query;
     query.set_type(dwork::QueryMsg::Create);
-    task->set_name(argv[2]);
+    dwork::TaskMsg *task = new_task(query, argv[2]);
     for(int i=3; i<argc; i++) {
         dwork::TaskMsg::Dep *dep = task->add_pred();
         dep->set_name(argv[i]);
@@ -33,11 +60,44 @@ int create(zmq::socket_t &hub, int argc, char *argv[]) {
     return sendrecv(hub, query);
 }
 
-int steal(zmq::socket_t &hub, int argc, char *argv[]) {
-    dwork::QueryMsg query;
-    query.set_type(dwork::QueryMsg::Steal);
+int addfile(zmq::socket_t &hub, int argc, char *argv[]) {
+    const int blksz = 16; // add tasks in blocks of 16 // add tasks in blocks of 16
 
-    return sendrecv(hub, query);
+    if(argc != 3) {
+        std::cout << "Error in " << argv[1] << ": filename required." << std::endl;
+        return 1;
+    }
+    std::ifstream file(argv[2]);
+    if(!file.is_open()) {
+        std::cout << "Error opening file " << argv[2] << std::endl;
+        return 1;
+    }
+
+    dwork::QueryMsg query;
+    query.set_type(dwork::QueryMsg::Create);
+
+    int added = 0;
+    std::string line;
+    while (std::getline(file, line)) {
+        std::vector<std::string> tok = tkrzw::StrSplit(line, ',', true);
+        if(tok.size() == 0) continue;
+
+        dwork::TaskMsg *task = new_task(query, tok[0]);
+        for(int i=1; i<tok.size(); i++) {
+            dwork::TaskMsg::Dep *dep = task->add_pred();
+            dep->set_name(tok[i]);
+        }
+        
+        added++;
+        if(added % blksz == 0) {
+            if( sendrecv(hub, query, false) ) return 1;
+        }
+    }
+    if(added % blksz != 0) {
+        if( sendrecv(hub, query, false) ) return 1;
+    }
+
+    return 0;
 }
 
 int complete(zmq::socket_t &hub, int argc, char *argv[]) {
@@ -46,27 +106,56 @@ int complete(zmq::socket_t &hub, int argc, char *argv[]) {
         return 1;
     }
     dwork::QueryMsg query;
-    dwork::TaskMsg *task = query.add_task();
-
     query.set_type(dwork::QueryMsg::Transfer);
-    task->set_name(argv[2]);
+    dwork::TaskMsg *task = new_task(query, argv[2]);
+    query.set_location(task->origin());
 
     return sendrecv(hub, query);
 }
 
-int worker_exit(zmq::socket_t &hub, int argc, char *argv[]) {
+dwork::QueryMsg loc_msg(dwork::QueryMsg::Type type, char *host) {
     char hostname[256];
-    char *host = hostname;
-    if(argc > 2) {
-        host = argv[2];
-    } else if(gethostname(hostname, sizeof(hostname))) {
-        perror("Error in gethostname");
-        return 1;
+    if(host == NULL) {
+        host = hostname;
+        if(gethostname(hostname, sizeof(hostname))) {
+            perror("Error in gethostname");
+            exit(1);
+        }
     }
     dwork::QueryMsg query;
 
-    query.set_type(dwork::QueryMsg::Exit);
+    query.set_type(type);
     query.set_location(host);
+    return query;
+}
+
+int steal(zmq::socket_t &hub, int argc, char *argv[]) {
+    char *host = NULL;
+    int n = 0;
+    if(argc > 3 && argc <= 5) {
+        if(!std::string("-n").compare(argv[2])) {
+            n = atoi(argv[3]);
+        } else {
+            std::cout << "Error in " << argv[1] << ": invalid args" << std::endl;
+            return 1;
+        }
+        if(argc == 5) {
+            host = argv[4];
+        }
+    } else if(argc == 3) {
+        host = argv[2];
+    } else if(argc != 2) {
+        std::cout << "Error in " << argv[1] << ": invalid args" << std::endl;
+        return 1;
+    }
+    dwork::QueryMsg query = loc_msg(dwork::QueryMsg::Steal, host);
+    if(n > 0)
+        query.set_n(n);
+    return sendrecv(hub, query);
+}
+
+int worker_exit(zmq::socket_t &hub, int argc, char *argv[]) {
+    dwork::QueryMsg query = loc_msg(dwork::QueryMsg::Exit, argc > 2 ? argv[2] : NULL);
     return sendrecv(hub, query);
 }
 
@@ -86,7 +175,8 @@ int main(int argc, char *argv[]) {
 
     std::map<std::string, Command> action{
         {"create",   Command(create,   "task [dep1] [dep2] ...")}
-    ,   {"steal",    Command(steal,    "")}
+    ,   {"addfile",  Command(addfile,  "<filename>")}
+    ,   {"steal",    Command(steal,    "[-n <num>] [hostname]")}
     ,   {"complete", Command(complete, "task")}
     ,   {"exit",     Command(worker_exit, "[hostname]")}
     };

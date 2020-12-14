@@ -2,22 +2,27 @@
 
     x. document ZeroMQ api
 
-    2. create the following codes:
+    x. create the following codes:
 
       x dhub
       x dquery
-      - dadd
-      - worker
+      x worker -- tests/kworker.cc
 
-    3. create tests using api to run a simple workflow
+    x. create tests using api to run a simple workflow
 
-    4. implement documentation
+    3. fix annoying shutdown issue - when to send Exit to workers.
 
-    5. check tests
+       - should it be sent when all active jobs are assigned?
+
+    4. libdwork - cleanup worker and document
+
+    5. strengthen tests and error handling
 
     6. performance benchmark
 
 # Waiting TODO-s
+
+    *. fix documentation error on first-build
 
     *. Add a hub test.
 

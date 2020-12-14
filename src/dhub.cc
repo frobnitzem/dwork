@@ -242,7 +242,7 @@ void *Hub::operator()() {
 }
 
 bool Hub::valid_query(dwork::QueryMsg &query) {
-    std::cout << "Received request: " << query.DebugString() << std::endl;
+    //std::cout << "Received request: " << query.DebugString() << std::endl;
 
     switch(query.type()) {
         case dwork::QueryMsg::Create: {
@@ -270,8 +270,6 @@ bool Hub::valid_query(dwork::QueryMsg &query) {
 }
 
 int Hub::handle_query(dwork::QueryMsg &query) {
-    std::cout << "Request is valid." << std::endl;
-
     switch(query.type()) {
     case dwork::QueryMsg::Create: {
         // TODO: logTransition ~> store task protobuf somewhere.
@@ -304,7 +302,11 @@ int Hub::handle_query(dwork::QueryMsg &query) {
         }
 
         if(query.task_size() == 0) {
-            query.set_type(dwork::QueryMsg::NotFound);
+            if(db.TH.active() > 0) {
+                query.set_type(dwork::QueryMsg::NotFound);
+            } else {
+                query.set_type(dwork::QueryMsg::Exit);
+            }
         } else {
             query.set_type(dwork::QueryMsg::Transfer);
         }
