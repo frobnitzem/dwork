@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <cassert>
 #include <iostream>
+#include <sstream>
 #include <signal.h>
 
 #include <deque>
@@ -99,6 +100,11 @@ class TaskMgr {
         ready.emplace_back(name);
     }
 
+    size_t ready_size() {
+        std::lock_guard<std::mutex> guard(mtx);
+        return ready.size();
+    }
+
     /**
      * Assign highest priority task to given host.
      *
@@ -128,7 +134,7 @@ class TaskMgr {
      *
      * @return  false on success, true if not found
      */
-    bool complete(std::string &name, std::string &host) {
+    bool complete(const std::string &name, const std::string &host) {
         std::lock_guard<std::mutex> guard(mtx);
         return assignments[host].erase(name) < 1;
     }
@@ -249,17 +255,25 @@ bool Hub::valid_query(dwork::QueryMsg &query) {
             if(query.task_size() < 1) return false;
             if(query.has_name() || query.has_n() || query.has_location()) return false;
         } break;
+        case dwork::QueryMsg::Transfer: {
+            if(query.task_size() < 1) return false;
+            if(query.has_name() || query.has_n() || !query.has_location()) return false;
+        } break;
         case dwork::QueryMsg::Steal: {
             if(query.task_size() != 0) return false;
             if(query.has_name() || !query.has_location()) return false;
         } break;
-        case dwork::QueryMsg::Transfer: {
+        case dwork::QueryMsg::Complete: {
             if(query.task_size() < 1) return false;
             if(query.has_name() || query.has_n() || !query.has_location()) return false;
         } break;
         case dwork::QueryMsg::Exit: {
             if(query.task_size() != 0) return false;
             if(query.has_name() || query.has_n() || !query.has_location()) return false;
+        } break;
+        case dwork::QueryMsg::OK: {
+            if(query.task_size() != 0) return false;
+            if(query.has_name() || query.has_n() || query.has_location()) return false;
         } break;
         default:
         err:
@@ -272,7 +286,6 @@ bool Hub::valid_query(dwork::QueryMsg &query) {
 int Hub::handle_query(dwork::QueryMsg &query) {
     switch(query.type()) {
     case dwork::QueryMsg::Create: {
-        // TODO: logTransition ~> store task protobuf somewhere.
         for(auto &t : query.task()) {
             add_task(t);
         }
@@ -298,7 +311,7 @@ int Hub::handle_query(dwork::QueryMsg &query) {
             dwork::TaskMsg *task = query.add_task();
             task->set_name(name); // TODO: lookup task itself...
             task->set_origin(hostname);
-            logTransition(task, dwork::TaskMsg::Stolen);
+            dwork::logTransition(task, dwork::TaskMsg::Stolen);
         }
 
         if(query.task_size() == 0) {
@@ -311,18 +324,40 @@ int Hub::handle_query(dwork::QueryMsg &query) {
             query.set_type(dwork::QueryMsg::Transfer);
         }
     } break;
-    case dwork::QueryMsg::Transfer: {
+    case dwork::QueryMsg::Complete: {
         std::string host = query.location();
         query.clear_location();
 
-        for(const auto task : query.task()) {
+        for(auto &task : query.task()) {
             // TODO? check task->origin
             std::string name(task.name());
 
             // TODO handle name lookup errors
             complete_task(name, host);
-            //logTransition(task, dwork::TaskMsg::Recorded);
+            //dwork::logTransition(&task, dwork::TaskMsg::Recorded);
             //TODO: store task info. to logfile
+        }
+        query.clear_task();
+        query.set_type(dwork::QueryMsg::OK);
+    } break;
+    case dwork::QueryMsg::Transfer: { // return back to queue
+        std::string host = query.location();
+        query.clear_location();
+
+        auto *tasks = query.mutable_task();
+        int errors = 0; // errors accumulate at front
+        for(int i=tasks->size()-1; i>=errors; i--) {
+            dwork::TaskMsg *task = tasks->Mutable(i);
+            // remove the assignment
+            if(mgr.complete(task->name(), host)) { // not found!
+                tasks->SwapElements(errors, i);
+                errors++;
+                i++;
+                continue;
+            }
+            // re-add task to the queue
+            add_task(*task);
+            tasks->RemoveLast();
         }
         query.clear_task();
         query.set_type(dwork::QueryMsg::OK);
@@ -336,6 +371,13 @@ int Hub::handle_query(dwork::QueryMsg &query) {
         } else {
             query.set_type(dwork::QueryMsg::OK);
         }
+    } break;
+    case dwork::QueryMsg::OK: {
+        size_t n = mgr.ready_size();
+        std::ostringstream ss;
+        ss << "dhub: " << db.TH.active() << " active tasks, " << n << " ready.";
+        query.set_name( ss.str() );
+        query.set_n( n );
     } break;
     /*case dwork::QueryMsg::Lookup: {
         auto loc = r.get("done/"+query.name());
@@ -359,6 +401,8 @@ int Hub::handle_query(dwork::QueryMsg &query) {
 #define id_from_taskname(x) (x);
 
 bool Hub::add_task(const dwork::TaskMsg &t) {
+    // TODO: store task data somewhere.
+    //dwork::logTransition(&task, dwork::TaskMsg::Waiting);
     std::vector<std::string_view> deps(t.pred_size());
     //for( const auto &dep : t.pred() ) {
     for(int i=0; i<t.pred_size(); i++) {

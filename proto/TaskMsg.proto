@@ -1,4 +1,5 @@
 syntax = "proto2";
+option optimize_for = LITE_RUNTIME;
 
 package dwork;
 
@@ -35,16 +36,17 @@ message QueryMsg {
   enum Type {
     Create   = 0; // Create new tasks (requires TaskMsg)
     Steal    = 1; // request a ready task (requires name == hostname)
-    Transfer = 2; // notify on completion of a task (requires TaskMsg)
-    Lookup   = 3; // lookup a location
-    NotFound = 4; // reply to steal / notify
-    OK       = 5;
-    Exit     = 6; // signal exit of server
-    Error    = 7;
+    Complete = 2; // notify on completion of a task (requires TaskMsg and location)
+    Transfer = 3; // transfer responsibility for a job (requires TaskMsg and location)
+    Lookup   = 4; // lookup a location
+    NotFound = 5; // reply to steal / transfer
+    OK       = 6;
+    Exit     = 7; // signal exit of server
+    Error    = 8; // message format/parse error
   }
   required Type    type = 1;
   repeated TaskMsg task = 2; // required when type == Notify
-  optional string  name = 3;     // task to lookup
+  optional string  name = 3; // task to lookup
   optional int32   n = 4;
   optional string  location = 6; // hostname lookup response OR hostname doing stealing
 }

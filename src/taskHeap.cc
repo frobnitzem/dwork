@@ -2,6 +2,54 @@
 
 namespace dwork {
 
+/**
+* Record processor to lookup existing or set to n if not found.
+*/
+class GetOrSet final : public tkrzw::DBM::RecordProcessor {
+  public:
+    /**
+     * Constructor.
+     * @param n          The number to set if not found.
+     * @param current    (output) value after lookup or set.
+     */
+    GetOrSet(int64_t n, int64_t* current = nullptr)
+        : n_(n), current_(current) {}
+
+    /**
+     * Processes an existing record.
+     */
+    std::string_view ProcessFull(std::string_view key, std::string_view value) override {
+        if (value.size() != 0) { // 0 if completed already. this will re-queue
+            if (current_ != nullptr)
+                *current_ = tkrzw::StrToIntBigEndian(value);
+            return NOOP;
+        }
+        if (current_ != nullptr)
+            *current_ = n_;
+        new_value_.reserve( sizeof(int64_t) );
+        new_value_.append(tkrzw::IntToStrBigEndian(n_));
+
+        return new_value_;
+    }
+
+    /**
+     * Processes an empty record space.
+     */
+    std::string_view ProcessEmpty(std::string_view key) override {
+        if (current_ != nullptr)
+            *current_ = n_;
+        new_value_.reserve( sizeof(int64_t) );
+        new_value_.append(tkrzw::IntToStrBigEndian(n_));
+
+        return new_value_;
+    }
+
+   private:
+    int64_t n_;
+    int64_t *current_;
+    std::string new_value_;
+};
+
 size_t TaskHeap::active() {
     return tasks.size()*TASK_BLK - nfree;
 }
@@ -32,7 +80,7 @@ size_t TaskHeap::lookup(std::string_view name) {
 }
 
 size_t TaskHeap::new_task(std::string_view name) {
-    size_t n;
+    int64_t n, val;
     {
         std::lock_guard<std::mutex> lck(mtx);
         if(nfree == 0) {
@@ -40,16 +88,17 @@ size_t TaskHeap::new_task(std::string_view name) {
         }
         n = flist[--nfree];
     }
-    std::string val = tkrzw::IntToStrBigEndian(n, sizeof(uint64_t));
-    if( !ids.Set(name, val, false).IsOK() ) {
-        // FIXME: record exists - race condition.
+    GetOrSet P(n, &val);
+    ids.Process(name, &P, true);
+
+    if( n == val ) { // success, store name
+        (*this)[n].name = name;
+    } else { // record exists, re
         std::lock_guard<std::mutex> lck(mtx);
         flist[nfree++] = n;
-        return lookup(name);
     }
-    (*this)[n].name = name;
 
-    return n;
+    return val;
 }
 
 void TaskHeap::delete_task(std::string_view name) {

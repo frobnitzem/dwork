@@ -22,12 +22,10 @@
 #include <google/protobuf/arena.h>
 #include <google/protobuf/arenastring.h>
 #include <google/protobuf/generated_message_util.h>
-#include <google/protobuf/metadata.h>
-#include <google/protobuf/message.h>
+#include <google/protobuf/message_lite.h>
 #include <google/protobuf/repeated_field.h>
 #include <google/protobuf/extension_set.h>
-#include <google/protobuf/generated_enum_reflection.h>
-#include <google/protobuf/unknown_field_set.h>
+#include <google/protobuf/generated_enum_util.h>
 // @@protoc_insertion_point(includes)
 
 namespace dwork {
@@ -57,44 +55,25 @@ const TaskMsg_State TaskMsg_State_State_MIN = TaskMsg_State_Pending;
 const TaskMsg_State TaskMsg_State_State_MAX = TaskMsg_State_Recorded;
 const int TaskMsg_State_State_ARRAYSIZE = TaskMsg_State_State_MAX + 1;
 
-const ::google::protobuf::EnumDescriptor* TaskMsg_State_descriptor();
-inline const ::std::string& TaskMsg_State_Name(TaskMsg_State value) {
-  return ::google::protobuf::internal::NameOfEnum(
-    TaskMsg_State_descriptor(), value);
-}
-inline bool TaskMsg_State_Parse(
-    const ::std::string& name, TaskMsg_State* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<TaskMsg_State>(
-    TaskMsg_State_descriptor(), name, value);
-}
 enum QueryMsg_Type {
   QueryMsg_Type_Create = 0,
   QueryMsg_Type_Steal = 1,
-  QueryMsg_Type_Transfer = 2,
-  QueryMsg_Type_Lookup = 3,
-  QueryMsg_Type_NotFound = 4,
-  QueryMsg_Type_OK = 5,
-  QueryMsg_Type_Exit = 6,
-  QueryMsg_Type_Error = 7
+  QueryMsg_Type_Complete = 2,
+  QueryMsg_Type_Transfer = 3,
+  QueryMsg_Type_Lookup = 4,
+  QueryMsg_Type_NotFound = 5,
+  QueryMsg_Type_OK = 6,
+  QueryMsg_Type_Exit = 7,
+  QueryMsg_Type_Error = 8
 };
 bool QueryMsg_Type_IsValid(int value);
 const QueryMsg_Type QueryMsg_Type_Type_MIN = QueryMsg_Type_Create;
 const QueryMsg_Type QueryMsg_Type_Type_MAX = QueryMsg_Type_Error;
 const int QueryMsg_Type_Type_ARRAYSIZE = QueryMsg_Type_Type_MAX + 1;
 
-const ::google::protobuf::EnumDescriptor* QueryMsg_Type_descriptor();
-inline const ::std::string& QueryMsg_Type_Name(QueryMsg_Type value) {
-  return ::google::protobuf::internal::NameOfEnum(
-    QueryMsg_Type_descriptor(), value);
-}
-inline bool QueryMsg_Type_Parse(
-    const ::std::string& name, QueryMsg_Type* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<QueryMsg_Type>(
-    QueryMsg_Type_descriptor(), name, value);
-}
 // ===================================================================
 
-class TaskMsg_Dep : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:dwork.TaskMsg.Dep) */ {
+class TaskMsg_Dep : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:dwork.TaskMsg.Dep) */ {
  public:
   TaskMsg_Dep();
   virtual ~TaskMsg_Dep();
@@ -106,16 +85,27 @@ class TaskMsg_Dep : public ::google::protobuf::Message /* @@protoc_insertion_poi
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields();
+  inline const ::std::string& unknown_fields() const {
+    return _unknown_fields_.GetNoArena(
+        &::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
 
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields();
+  inline ::std::string* mutable_unknown_fields() {
+    return _unknown_fields_.MutableNoArena(
+        &::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const TaskMsg_Dep& default_instance();
+
+  #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
+  // Returns the internal default instance pointer. This function can
+  // return NULL thus should not be used by the user. This is intended
+  // for Protobuf internal code. Please use default_instance() declared
+  // above instead.
+  static inline const TaskMsg_Dep* internal_default_instance() {
+    return default_instance_;
+  }
+  #endif
 
   void Swap(TaskMsg_Dep* other);
 
@@ -124,8 +114,7 @@ class TaskMsg_Dep : public ::google::protobuf::Message /* @@protoc_insertion_poi
   inline TaskMsg_Dep* New() const { return New(NULL); }
 
   TaskMsg_Dep* New(::google::protobuf::Arena* arena) const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from);
   void CopyFrom(const TaskMsg_Dep& from);
   void MergeFrom(const TaskMsg_Dep& from);
   void Clear();
@@ -136,11 +125,7 @@ class TaskMsg_Dep : public ::google::protobuf::Message /* @@protoc_insertion_poi
       ::google::protobuf::io::CodedInputStream* input);
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
-    return InternalSerializeWithCachedSizesToArray(false, output);
-  }
+  void DiscardUnknownFields();
   int GetCachedSize() const { return _cached_size_; }
   private:
   void SharedCtor();
@@ -149,14 +134,14 @@ class TaskMsg_Dep : public ::google::protobuf::Message /* @@protoc_insertion_poi
   void InternalSwap(TaskMsg_Dep* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return _internal_metadata_.arena();
+    return _arena_ptr_;
   }
-  inline void* MaybeArenaPtr() const {
-    return _internal_metadata_.raw_arena_ptr();
+  inline ::google::protobuf::Arena* MaybeArenaPtr() const {
+    return _arena_ptr_;
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const;
+  ::std::string GetTypeName() const;
 
   // nested types ----------------------------------------------------
 
@@ -193,12 +178,18 @@ class TaskMsg_Dep : public ::google::protobuf::Message /* @@protoc_insertion_poi
   inline void set_has_location();
   inline void clear_has_location();
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::ArenaStringPtr _unknown_fields_;
+  ::google::protobuf::Arena* _arena_ptr_;
+
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::internal::ArenaStringPtr name_;
   ::google::protobuf::internal::ArenaStringPtr location_;
+  #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
+  friend void  protobuf_AddDesc_TaskMsg_2eproto_impl();
+  #else
   friend void  protobuf_AddDesc_TaskMsg_2eproto();
+  #endif
   friend void protobuf_AssignDesc_TaskMsg_2eproto();
   friend void protobuf_ShutdownFile_TaskMsg_2eproto();
 
@@ -207,7 +198,7 @@ class TaskMsg_Dep : public ::google::protobuf::Message /* @@protoc_insertion_poi
 };
 // -------------------------------------------------------------------
 
-class TaskMsg_LogMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:dwork.TaskMsg.LogMsg) */ {
+class TaskMsg_LogMsg : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:dwork.TaskMsg.LogMsg) */ {
  public:
   TaskMsg_LogMsg();
   virtual ~TaskMsg_LogMsg();
@@ -219,16 +210,27 @@ class TaskMsg_LogMsg : public ::google::protobuf::Message /* @@protoc_insertion_
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields();
+  inline const ::std::string& unknown_fields() const {
+    return _unknown_fields_.GetNoArena(
+        &::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
 
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields();
+  inline ::std::string* mutable_unknown_fields() {
+    return _unknown_fields_.MutableNoArena(
+        &::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const TaskMsg_LogMsg& default_instance();
+
+  #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
+  // Returns the internal default instance pointer. This function can
+  // return NULL thus should not be used by the user. This is intended
+  // for Protobuf internal code. Please use default_instance() declared
+  // above instead.
+  static inline const TaskMsg_LogMsg* internal_default_instance() {
+    return default_instance_;
+  }
+  #endif
 
   void Swap(TaskMsg_LogMsg* other);
 
@@ -237,8 +239,7 @@ class TaskMsg_LogMsg : public ::google::protobuf::Message /* @@protoc_insertion_
   inline TaskMsg_LogMsg* New() const { return New(NULL); }
 
   TaskMsg_LogMsg* New(::google::protobuf::Arena* arena) const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from);
   void CopyFrom(const TaskMsg_LogMsg& from);
   void MergeFrom(const TaskMsg_LogMsg& from);
   void Clear();
@@ -249,11 +250,7 @@ class TaskMsg_LogMsg : public ::google::protobuf::Message /* @@protoc_insertion_
       ::google::protobuf::io::CodedInputStream* input);
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
-    return InternalSerializeWithCachedSizesToArray(false, output);
-  }
+  void DiscardUnknownFields();
   int GetCachedSize() const { return _cached_size_; }
   private:
   void SharedCtor();
@@ -262,14 +259,14 @@ class TaskMsg_LogMsg : public ::google::protobuf::Message /* @@protoc_insertion_
   void InternalSwap(TaskMsg_LogMsg* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return _internal_metadata_.arena();
+    return _arena_ptr_;
   }
-  inline void* MaybeArenaPtr() const {
-    return _internal_metadata_.raw_arena_ptr();
+  inline ::google::protobuf::Arena* MaybeArenaPtr() const {
+    return _arena_ptr_;
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const;
+  ::std::string GetTypeName() const;
 
   // nested types ----------------------------------------------------
 
@@ -299,12 +296,18 @@ class TaskMsg_LogMsg : public ::google::protobuf::Message /* @@protoc_insertion_
   // helper for ByteSize()
   int RequiredFieldsByteSizeFallback() const;
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::ArenaStringPtr _unknown_fields_;
+  ::google::protobuf::Arena* _arena_ptr_;
+
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::int64 time_;
   int state_;
+  #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
+  friend void  protobuf_AddDesc_TaskMsg_2eproto_impl();
+  #else
   friend void  protobuf_AddDesc_TaskMsg_2eproto();
+  #endif
   friend void protobuf_AssignDesc_TaskMsg_2eproto();
   friend void protobuf_ShutdownFile_TaskMsg_2eproto();
 
@@ -313,7 +316,7 @@ class TaskMsg_LogMsg : public ::google::protobuf::Message /* @@protoc_insertion_
 };
 // -------------------------------------------------------------------
 
-class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:dwork.TaskMsg) */ {
+class TaskMsg : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:dwork.TaskMsg) */ {
  public:
   TaskMsg();
   virtual ~TaskMsg();
@@ -325,16 +328,27 @@ class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(c
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields();
+  inline const ::std::string& unknown_fields() const {
+    return _unknown_fields_.GetNoArena(
+        &::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
 
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields();
+  inline ::std::string* mutable_unknown_fields() {
+    return _unknown_fields_.MutableNoArena(
+        &::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const TaskMsg& default_instance();
+
+  #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
+  // Returns the internal default instance pointer. This function can
+  // return NULL thus should not be used by the user. This is intended
+  // for Protobuf internal code. Please use default_instance() declared
+  // above instead.
+  static inline const TaskMsg* internal_default_instance() {
+    return default_instance_;
+  }
+  #endif
 
   void Swap(TaskMsg* other);
 
@@ -343,8 +357,7 @@ class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   inline TaskMsg* New() const { return New(NULL); }
 
   TaskMsg* New(::google::protobuf::Arena* arena) const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from);
   void CopyFrom(const TaskMsg& from);
   void MergeFrom(const TaskMsg& from);
   void Clear();
@@ -355,11 +368,7 @@ class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(c
       ::google::protobuf::io::CodedInputStream* input);
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
-    return InternalSerializeWithCachedSizesToArray(false, output);
-  }
+  void DiscardUnknownFields();
   int GetCachedSize() const { return _cached_size_; }
   private:
   void SharedCtor();
@@ -368,14 +377,14 @@ class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   void InternalSwap(TaskMsg* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return _internal_metadata_.arena();
+    return _arena_ptr_;
   }
-  inline void* MaybeArenaPtr() const {
-    return _internal_metadata_.raw_arena_ptr();
+  inline ::google::protobuf::Arena* MaybeArenaPtr() const {
+    return _arena_ptr_;
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const;
+  ::std::string GetTypeName() const;
 
   // nested types ----------------------------------------------------
 
@@ -408,17 +417,6 @@ class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(c
     TaskMsg_State_State_MAX;
   static const int State_ARRAYSIZE =
     TaskMsg_State_State_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  State_descriptor() {
-    return TaskMsg_State_descriptor();
-  }
-  static inline const ::std::string& State_Name(State value) {
-    return TaskMsg_State_Name(value);
-  }
-  static inline bool State_Parse(const ::std::string& name,
-      State* value) {
-    return TaskMsg_State_Parse(name, value);
-  }
 
   // accessors -------------------------------------------------------
 
@@ -492,7 +490,9 @@ class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   // helper for ByteSize()
   int RequiredFieldsByteSizeFallback() const;
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::ArenaStringPtr _unknown_fields_;
+  ::google::protobuf::Arena* _arena_ptr_;
+
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::internal::ArenaStringPtr name_;
@@ -500,7 +500,11 @@ class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::google::protobuf::RepeatedPtrField< ::dwork::TaskMsg_Dep > pred_;
   ::google::protobuf::RepeatedPtrField< ::dwork::TaskMsg_Dep > succ_;
   ::google::protobuf::RepeatedPtrField< ::dwork::TaskMsg_LogMsg > log_;
+  #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
+  friend void  protobuf_AddDesc_TaskMsg_2eproto_impl();
+  #else
   friend void  protobuf_AddDesc_TaskMsg_2eproto();
+  #endif
   friend void protobuf_AssignDesc_TaskMsg_2eproto();
   friend void protobuf_ShutdownFile_TaskMsg_2eproto();
 
@@ -509,7 +513,7 @@ class TaskMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 };
 // -------------------------------------------------------------------
 
-class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:dwork.QueryMsg) */ {
+class QueryMsg : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:dwork.QueryMsg) */ {
  public:
   QueryMsg();
   virtual ~QueryMsg();
@@ -521,16 +525,27 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields();
+  inline const ::std::string& unknown_fields() const {
+    return _unknown_fields_.GetNoArena(
+        &::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
 
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields();
+  inline ::std::string* mutable_unknown_fields() {
+    return _unknown_fields_.MutableNoArena(
+        &::google::protobuf::internal::GetEmptyStringAlreadyInited());
   }
 
-  static const ::google::protobuf::Descriptor* descriptor();
   static const QueryMsg& default_instance();
+
+  #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
+  // Returns the internal default instance pointer. This function can
+  // return NULL thus should not be used by the user. This is intended
+  // for Protobuf internal code. Please use default_instance() declared
+  // above instead.
+  static inline const QueryMsg* internal_default_instance() {
+    return default_instance_;
+  }
+  #endif
 
   void Swap(QueryMsg* other);
 
@@ -539,8 +554,7 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
   inline QueryMsg* New() const { return New(NULL); }
 
   QueryMsg* New(::google::protobuf::Arena* arena) const;
-  void CopyFrom(const ::google::protobuf::Message& from);
-  void MergeFrom(const ::google::protobuf::Message& from);
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from);
   void CopyFrom(const QueryMsg& from);
   void MergeFrom(const QueryMsg& from);
   void Clear();
@@ -551,11 +565,7 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
       ::google::protobuf::io::CodedInputStream* input);
   void SerializeWithCachedSizes(
       ::google::protobuf::io::CodedOutputStream* output) const;
-  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
-      bool deterministic, ::google::protobuf::uint8* output) const;
-  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const {
-    return InternalSerializeWithCachedSizesToArray(false, output);
-  }
+  void DiscardUnknownFields();
   int GetCachedSize() const { return _cached_size_; }
   private:
   void SharedCtor();
@@ -564,14 +574,14 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
   void InternalSwap(QueryMsg* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
-    return _internal_metadata_.arena();
+    return _arena_ptr_;
   }
-  inline void* MaybeArenaPtr() const {
-    return _internal_metadata_.raw_arena_ptr();
+  inline ::google::protobuf::Arena* MaybeArenaPtr() const {
+    return _arena_ptr_;
   }
   public:
 
-  ::google::protobuf::Metadata GetMetadata() const;
+  ::std::string GetTypeName() const;
 
   // nested types ----------------------------------------------------
 
@@ -580,6 +590,8 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
     QueryMsg_Type_Create;
   static const Type Steal =
     QueryMsg_Type_Steal;
+  static const Type Complete =
+    QueryMsg_Type_Complete;
   static const Type Transfer =
     QueryMsg_Type_Transfer;
   static const Type Lookup =
@@ -601,17 +613,6 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
     QueryMsg_Type_Type_MAX;
   static const int Type_ARRAYSIZE =
     QueryMsg_Type_Type_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  Type_descriptor() {
-    return QueryMsg_Type_descriptor();
-  }
-  static inline const ::std::string& Type_Name(Type value) {
-    return QueryMsg_Type_Name(value);
-  }
-  static inline bool Type_Parse(const ::std::string& name,
-      Type* value) {
-    return QueryMsg_Type_Parse(name, value);
-  }
 
   // accessors -------------------------------------------------------
 
@@ -676,7 +677,9 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
   inline void set_has_location();
   inline void clear_has_location();
 
-  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::ArenaStringPtr _unknown_fields_;
+  ::google::protobuf::Arena* _arena_ptr_;
+
   ::google::protobuf::uint32 _has_bits_[1];
   mutable int _cached_size_;
   ::google::protobuf::RepeatedPtrField< ::dwork::TaskMsg > task_;
@@ -684,7 +687,11 @@ class QueryMsg : public ::google::protobuf::Message /* @@protoc_insertion_point(
   ::google::protobuf::int32 n_;
   ::google::protobuf::internal::ArenaStringPtr name_;
   ::google::protobuf::internal::ArenaStringPtr location_;
+  #ifdef GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER
+  friend void  protobuf_AddDesc_TaskMsg_2eproto_impl();
+  #else
   friend void  protobuf_AddDesc_TaskMsg_2eproto();
+  #endif
   friend void protobuf_AssignDesc_TaskMsg_2eproto();
   friend void protobuf_ShutdownFile_TaskMsg_2eproto();
 
@@ -1270,15 +1277,7 @@ namespace google {
 namespace protobuf {
 
 template <> struct is_proto_enum< ::dwork::TaskMsg_State> : ::google::protobuf::internal::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::dwork::TaskMsg_State>() {
-  return ::dwork::TaskMsg_State_descriptor();
-}
 template <> struct is_proto_enum< ::dwork::QueryMsg_Type> : ::google::protobuf::internal::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::dwork::QueryMsg_Type>() {
-  return ::dwork::QueryMsg_Type_descriptor();
-}
 
 }  // namespace protobuf
 }  // namespace google

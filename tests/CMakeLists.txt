@@ -15,7 +15,7 @@ do_test(taskDB)
 
 set(CMAKE_CXX_FLAGS "-O3")
 add_executable(ktest test_kernel.cc kernel.cc)
-add_test(NAME ktest COMMAND ${target} 512 512)
+add_test(NAME ktest COMMAND ktest 512 512)
 
 add_executable(kworker kworker.cc kernel.cc)
 target_link_libraries(kworker PUBLIC dwork)

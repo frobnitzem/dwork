@@ -22,7 +22,7 @@ void add_ternary(dwork::TaskDB &db, std::string_view x, std::string_view y, std:
 }
 
 void print_TaskT(const dwork::TaskT &t) {
-    std::cout << "TaskT " << t.complete << std::endl;
+    std::cout << "TaskT, complete = " << t.complete << std::endl;
     std::cout << "    joins = " << t.joins << std::endl;
     for(auto s : t.succ) {
         std::cout << "    succ = " << s << std::endl;
@@ -44,8 +44,9 @@ int main(int argc, char *argv[]) {
     add_ternary(db, "A", "B", "C", &start);
     add_ternary(db, "X", "A", "C", &start);
 
-    dwork::TaskT x = db.inspect("A");
-    print_TaskT( x );
+    print_TaskT( db.inspect("A") );
+    print_TaskT( db.inspect("B") );
+    print_TaskT( db.inspect("C") );
 
     db.complete_task("C", enque, &start);
     db.complete_task("B", enque, &start);

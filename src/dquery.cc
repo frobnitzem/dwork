@@ -28,17 +28,17 @@ dwork::TaskMsg *new_task(dwork::QueryMsg &query, const std::string &name) {
 
 int sendrecv(zmq::socket_t &hub, dwork::QueryMsg &query, bool show=true) {
     if(show)
-        std::cout << "Sending:" << std::endl
-                  << query.DebugString() << std::endl;
+        std::cout << " - sending -" << std::endl
+                  << query      << std::endl;
     sendProto(hub, query);
     auto resp = recvProto<dwork::QueryMsg>(hub);
     if(!resp.has_value()) {
-        std::cout << "Received unparsable query." << std::endl;
+        std::cout << " - received unparsable query -" << std::endl;
         return 1;
     }
     if(show)
-        std::cout << "Received:" << std::endl
-                  << resp.value().DebugString() << std::endl;
+        std::cout << " - received -"  << std::endl
+                  << resp.value() << std::endl;
 
     query.clear_location();
     query.clear_task();
@@ -110,7 +110,7 @@ int complete(zmq::socket_t &hub, int argc, char *argv[]) {
         return 1;
     }
     dwork::QueryMsg query;
-    query.set_type(dwork::QueryMsg::Transfer);
+    query.set_type(dwork::QueryMsg::Complete);
     dwork::TaskMsg *task = new_task(query, argv[2]);
     query.set_location(task->origin());
 
@@ -163,6 +163,11 @@ int worker_exit(zmq::socket_t &hub, int argc, char *argv[]) {
     return sendrecv(hub, query);
 }
 
+int status(zmq::socket_t &hub, int argc, char *argv[]) {
+    dwork::QueryMsg query;
+    query.set_type(dwork::QueryMsg::OK);
+    return sendrecv(hub, query);
+}
 
 typedef int (*action_f)(zmq::socket_t &hub, int argc, char *argv[]);
 struct Command {
@@ -183,6 +188,7 @@ int main(int argc, char *argv[]) {
     ,   {"steal",    Command(steal,    "[-n <num>] [hostname]")}
     ,   {"complete", Command(complete, "task")}
     ,   {"exit",     Command(worker_exit, "[hostname]")}
+    ,   {"status",   Command(status, "")}
     };
 
     zmq::context_t context (1);

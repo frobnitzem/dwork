@@ -51,14 +51,14 @@ class Worker {
      */
     int sendrecv(dwork::QueryMsg &query) {
         //std::cout << "Sending:" << std::endl
-        //          << query.DebugString() << std::endl;
+        //          << query      << std::endl;
         sendProto(hub, query);
 
         zmq::message_t msg;
         const auto ret = hub.recv(msg, zmq::recv_flags::none);
         if(ret.value_or(0) == 0) {
             std::cout << "Received unparsable response to request:" << std::endl;
-            std::cout << query.DebugString() << std::endl;
+            std::cout << query << std::endl;
             return 1;
         }
         //query.clear();
@@ -69,7 +69,7 @@ class Worker {
             return 1;
         }
         //std::cout << "Received:" << std::endl
-        //          << query.value().DebugString() << std::endl;
+        //          << query.value() << std::endl;
 
         return 0;
     }
@@ -108,7 +108,7 @@ class Worker {
     /** Send task completion notifications.
      */
     int complete(const std::vector<std::string> &tasks) {
-        dwork::QueryMsg query = loc_msg(dwork::QueryMsg::Transfer);
+        dwork::QueryMsg query = loc_msg(dwork::QueryMsg::Complete);
         for(auto &name : tasks) {
             new_task(query, name);
         }

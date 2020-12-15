@@ -18,7 +18,11 @@
 
     5. strengthen tests and error handling
 
+       - add test for GetOrSet behavior of TaskHeap::new_task.
+
     6. performance benchmark
+
+       - test protobuf with "option cc_enable_arenas = true;"
 
 # Waiting TODO-s
 

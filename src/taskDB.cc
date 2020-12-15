@@ -155,25 +155,20 @@ public:
 
 TaskDB::TaskDB(size_t sz) : TH(sz), tasks(sz) { }
 
-// FIXME: deal with the case where an identical task was detected in the DB
 TaskID TaskDB::new_task(std::string_view name, std::vector<std::string_view> deps,
                          void (*enque)(std::string_view, void *), void *info) {
-    // lookup to find existing key
-    TaskID n = TH.lookup(name); // FIXME: replace with new_task, but allow lookup too
-    if(n == -1) { // add new task
-        n = TH.new_task(name);
-    }
+    TaskID n = TH.new_task(name);
     std::string key = tkrzw::IntToStrBigEndian(n);
 
-    IncrJoin P(deps.size());
-    tasks.Process(key, &P, true);
+    IncrJoin P(deps.size()+1);
+    tasks.Process(key, &P, true).IsOK();
 
-    int64_t fixup = add_deps(n, deps) - deps.size();
-    int64_t remain = deps.size();
-    if(fixup != 0) { // remove refs to account for unsuccessful add_deps
-            IncrJoin Pf(fixup, &remain);
-            tasks.Process(key, &Pf, true);
-    }
+    int64_t fixup = add_deps(n, deps) - deps.size()-1;
+    int64_t remain;
+    // remove refs to account for unsuccessful add_deps
+    IncrJoin Pf(fixup, &remain);
+    tasks.Process(key, &Pf, true);
+
     if(remain == 0) { // task has been made newly ready
         enque(name, info);
     }

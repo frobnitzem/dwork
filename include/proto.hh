@@ -1,9 +1,17 @@
 #include <string>
 #include <string.h>
 #include <zmq.hpp>
+#include <iostream>
 
-#include <google/protobuf/util/time_util.h>
 #include <TaskMsg.pb.h>
+
+#include <sys/time.h>
+inline int64_t time_in_us() {
+    struct timeval  time;
+    struct timezone zone;
+    gettimeofday(&time, &zone);
+    return time.tv_sec*1000000 + time.tv_usec;
+}
 
 /** Send a protobuf over ZeroMQ socket. */
 template <typename P>
@@ -31,10 +39,18 @@ std::optional<P> recvProto(zmq::socket_t &socket) {
     return pb;
 }
 
-void logTransition(dwork::TaskMsg *task, const dwork::TaskMsg_State &state) {
-    dwork::TaskMsg::LogMsg *log = task->add_log();
-    log->set_state(state);
-    auto time = google::protobuf::util::TimeUtil::GetCurrentTime();
-    log->set_time( google::protobuf::util::TimeUtil::TimestampToMilliseconds(time) );
-}
+namespace dwork {
+    void logTransition(TaskMsg *task, const TaskMsg_State &state) {
+        TaskMsg::LogMsg *log = task->add_log();
+        log->set_state(state);
+        log->set_time( time_in_us() );
+    }
 
+    /** Friendly printing functions. */
+    std::ostream &operator<<(std::ostream &os, const TaskMsg::State &s);
+    std::ostream &operator<<(std::ostream &os, const TaskMsg::Dep &d);
+    std::ostream &operator<<(std::ostream &os, const TaskMsg::LogMsg &l);
+    std::ostream &operator<<(std::ostream &os, const TaskMsg &t);
+    std::ostream &operator<<(std::ostream &os, const QueryMsg::Type &s);
+    std::ostream &operator<<(std::ostream &os, const QueryMsg &q);
+}

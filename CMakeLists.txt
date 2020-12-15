@@ -36,7 +36,7 @@ set(PROTO_SRCS proto/TaskMsg.pb.cc)
 set(PROTO_HDRS include/TaskMsg.pb.h)
 
 ##########  TARGETS  ################################################
-add_library(dwork src/taskDB.cc src/taskHeap.cc src/dag.cc ${PROTO_SRCS})
+add_library(dwork src/taskDB.cc src/taskHeap.cc src/proto.cc src/dag.cc ${PROTO_SRCS})
 add_executable(manager src/manager.cc)
 add_executable(dhub   src/dhub.cc)
 add_executable(dquery src/dquery.cc)
@@ -45,7 +45,7 @@ add_subdirectory ("docs")
 
 # library code properties
 
-target_link_libraries(dwork PUBLIC dwork_compiler_flags protobuf::libprotobuf cppzmq PkgConfig::TKRZW Threads::Threads)
+target_link_libraries(dwork PUBLIC dwork_compiler_flags protobuf::libprotobuf-lite cppzmq PkgConfig::TKRZW Threads::Threads)
 target_include_directories(dwork
                            PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

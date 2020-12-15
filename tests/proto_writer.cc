@@ -29,10 +29,12 @@ int main(int argc, char* argv[]) {
 
   { // Write to disk.
     fstream output(argv[1], ios::out | ios::trunc | ios::binary);
-    if (!task.SerializeToOstream(&output)) {
+    std::string out;
+    if (!task.SerializeToString(&out)) {
       cerr << "Failed to write TaskMsg." << endl;
       return -1;
     }
+    output << out;
   }
 
   // Optional:  Delete all global objects allocated by libprotobuf.

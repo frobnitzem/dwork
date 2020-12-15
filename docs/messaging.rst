@@ -15,11 +15,13 @@ These are documented in `proto/TaskMsg.proto`::
       enum Type {
         Create   = 0; // Create new tasks (requires TaskMsg)
         Steal    = 1; // request a ready task (requires name == hostname)
-        Transfer = 2; // notify on completion of a task (requires TaskMsg)
-        Lookup   = 3; // lookup a location
-        NotFound = 4; // reply to steal / transfer
-        Exit     = 5; // signal exit of server
+        Complete = 2; // notify on completion of a task (requires TaskMsg and location)
+        Transfer = 3; // transfer responsibility for a job (requires TaskMsg and location)
+        Lookup   = 4; // lookup a location
+        NotFound = 5; // reply to steal / transfer
         OK       = 6;
+        Exit     = 7; // signal exit of server
+        Error    = 8; // message format/parse error
       }
       required Type    type = 1;
       repeated TaskMsg task = 2; // required when type == Notify
@@ -61,6 +63,36 @@ additional dependencies to an existing task.
 
     - type = QueryMsg::OK
 
+re-create task(s)
+-----------------
+
+This takes a task that was assigned to `location` and
+un-assigns it, adding it back into the queue to
+be processed again as if `Create` had been called.
+Dependencies listed by the task are treated as
+new dependencies, and are added to the graph.
+
+If the server responds with `QueryMsg::NotFound`,
+it means the task was not assigned to that location.
+In this case, no task is added and no updates
+are done.
+If the caller *still* wants to run this task,
+it will have to make a separate call to `Create`.
+
+  * Request
+
+    - type = QueryMsg::Transfer
+    - task = [TaskMsg]
+    - location = hostname re-creating work
+
+  * **Response**
+
+    - type = QueryMsg::OK
+
+  * **Response**
+
+    - type = QueryMsg::NotFound - the task was not found
+
 
 steal task(s)
 -------------
@@ -96,9 +128,9 @@ back to the server.
 
   * Request
 
-    - type = QueryMsg::Transfer
-    - location = hostname completing work
+    - type = QueryMsg::Complete
     - task = [TaskMsg]
+    - location = hostname completing work
 
   * **Response**
 
@@ -127,4 +159,17 @@ tasks are moved back to the `ready` pool.
   * **Response**
 
     - type = QueryMsg::NotFound - FYI - the worker was not listed as active
+
+query status
+------------
+
+  * Request
+
+    - type = QueryMsg::OK
+
+  * **Response**
+
+    - type = QueryMsg::OK
+    - name = string describing current status
+    - n    = number of ready tasks at query time
 

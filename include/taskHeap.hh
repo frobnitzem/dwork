@@ -37,7 +37,7 @@ class TaskHeap {
         return tasks[n/TASK_BLK].grp[n%TASK_BLK];
     }
 
-    size_t new_task(std::string_view name);  ///< assign this task a number
+    size_t new_task(std::string_view name);  ///< assign this task a number (or retrieve if existing)
     void delete_task(std::string_view name); ///< caller must ensure no refs to this number remain
     size_t active(); ///< returns number of active tasks
 
