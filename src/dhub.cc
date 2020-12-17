@@ -163,8 +163,9 @@ class Hub {
     TaskMgr mgr;
 
   public:
-    Hub(void *arg) : context( *(zmq::context_t *) arg )
-                   , db(1<<20)
+    Hub(zmq::context_t &arg)
+                : context( arg )
+                , db(1<<20)
     {
         if(gethostname(hostname, sizeof(hostname))) {
             perror("Error in gethostname");
@@ -416,8 +417,8 @@ bool Hub::add_task(const dwork::TaskMsg &t) {
 
 template <typename W>
 void *runWorker(void *arg) {
-    W work(arg);
-    return work();
+    W *w = (W *)arg;
+    return (*w)();
 }
 
 int main () {
@@ -435,10 +436,12 @@ int main () {
 
     s_block_signals();
 
+    Hub hub(context);
+
     //  Launch pool of worker threads
     pthread_create(&threads[0], NULL, WaitForAbortThread, (void *) &context);
     for (int i = 1; i <= num_threads; i++) {
-        pthread_create(&threads[i], NULL, runWorker<Hub>, (void *) &context);
+        pthread_create(&threads[i], NULL, runWorker<Hub>, (void *) &hub);
     }
 
     zmq::socket_t control = SubscribeControl(context);
