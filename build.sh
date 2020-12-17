@@ -1,6 +1,7 @@
 #!/bin/bash
 
-LOCALROOT=$PWD/build/inst
+LOCALROOT=$PWD/deps
+
 CXX=g++
 # hiredis
 #CXXFLAGS += $(shell pkg-config --cflags hiredis)

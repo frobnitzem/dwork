@@ -42,43 +42,12 @@
 #define Pthread_mutex_destroy(m) { \
     int r = pthread_mutex_destroy(m); \
     if(r) { \
-        /*if(r == EBUSY) { \
-            lock(m); \
-            unlock(m); \
-        } else*/ { \
+        { \
             fprintf(stderr, "Failed pthread_mutex_destroy at %s:%d (in %s)" \
                             " -- err = %d\n", \
                             __FILE__, __LINE__, __func__, r); \
             exit(1); \
         } \
-    } \
-}
-
-#define lock(m) { \
-    int ret = pthread_mutex_lock(m); \
-    if(ret != 0) { \
-        if(ret == EDEADLK) { \
-            fprintf(stderr, "Detected deadlock at %s:%d (in %s)\n", \
-                            __FILE__, __LINE__, __func__); \
-        } else { \
-            fprintf(stderr, "Invalid lock at %s:%d (in %s)\n", \
-                            __FILE__, __LINE__, __func__); \
-        } \
-        exit(1); \
-    } \
-}
-
-#define unlock(m) { \
-    int ret = pthread_mutex_unlock(m); \
-    if(ret != 0) { \
-        if(ret == EDEADLK) { \
-            fprintf(stderr, "Detected deadlock at %s:%d (in %s)\n", \
-                            __FILE__, __LINE__, __func__); \
-        } else { \
-            fprintf(stderr, "Invalid lock at %s:%d (in %s)\n", \
-                            __FILE__, __LINE__, __func__); \
-        } \
-        exit(1); \
     } \
 }
 

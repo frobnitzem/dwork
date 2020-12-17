@@ -43,7 +43,7 @@ double execute_kernel_compute(const Kernel &k) {
   
   for (int i = 0; i < 64; i++) {
     //A[i] = 1.2345;
-    A[i] = 0.999;
+    A[i] = 0.99;
   }
   
   for (long iter = 0; iter < k.iterations; iter++) {

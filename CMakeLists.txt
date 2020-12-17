@@ -40,7 +40,7 @@ add_library(dwork src/taskDB.cc src/taskHeap.cc src/proto.cc src/dag.cc ${PROTO_
 add_executable(manager src/manager.cc)
 add_executable(dhub   src/dhub.cc)
 add_executable(dquery src/dquery.cc)
-add_subdirectory ("docs")
+#add_subdirectory ("docs")
 #####################################################################
 
 # library code properties

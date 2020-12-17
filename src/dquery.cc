@@ -193,11 +193,18 @@ int main(int argc, char *argv[]) {
 
     zmq::context_t context (1);
     zmq::socket_t  hub(context, zmq::socket_type::req);
-    hub.connect ("tcp://localhost:5555");
+    const char local[] = "tcp://localhost:6125";
+    const char *dhub = local;
+    if(argc >= 3 && !std::string("-s").compare(argv[1])) {
+        dhub = argv[2];
+        argv[2] = argv[0];
+        argc -= 2;
+        argv += 2;
+    }
 
     // No args at all
     if(argc < 2) {
-        std::cout << "Usage: " << argv[0] << " [-h] <cmd name>" << std::endl;
+        std::cout << "Usage: " << argv[0] << " [-s server] [-h] <cmd name>" << std::endl;
         return 1;
     }
 
@@ -219,11 +226,16 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
+    hub.connect (dhub);
     Command &c = action[ argv[1] ];
     if(c.run == NULL) {
         std::cout << "Invalid command: " << argv[1] << std::endl;
         return 1;
     }
-    return c.run(hub, argc, argv);
+    int64_t t0 = time_in_us();
+    int ret = c.run(hub, argc, argv);
+    int64_t t1 = time_in_us();
+    printf("query time (us) = %ld\n", t1-t0);
+    return ret;
 }
 

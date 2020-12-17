@@ -9,6 +9,14 @@ struct Kernel {
 
 double execute_kernel_compute(const Kernel &k);
 
+#include <sys/time.h>
+inline int64_t time_in_us() {
+    struct timeval  time;
+    struct timezone zone;
+    gettimeofday(&time, &zone);
+    return time.tv_sec*1000000 + time.tv_usec;
+}
+
 // Note: The taskbench paper uses this kernel
 //       in the N=(cores) x T=1000 stencil pattern.
 //
@@ -27,11 +35,16 @@ int main(int argc, char *argv[]) {
     //const long iter = 1<<9;
     const long iter = atol(argv[1]);
     const long nrun = atol(argv[2]);
+    int64_t t0 = time_in_us();
     for(long i=0; i<nrun; i++) {
         Kernel k(iter);
         x += execute_kernel_compute(k);
     }
-    printf("GFLOP = %e\n", (double)nrun*(iter*128+64)*1e-9);
+    int64_t t1 = time_in_us();
     printf("x = %e\n", x);
+    printf("GFLOP = %e, GFLOPS = %f\n", (double)nrun*(iter*128+64)*1e-9,
+                                        (double)nrun*(iter*128+64)*1e-3 / (t1-t0));
+    printf("time (us) = %ld\n", t1-t0);
+
     return 0;
 }

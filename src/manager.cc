@@ -47,7 +47,7 @@ class Manager {
 
     // receives work from the hub
     Manager(zmq::context_t &context) : hub(context, zmq::socket_type::req) {
-        hub.connect ("tcp://localhost:5555");
+        hub.connect ("tcp://localhost:6125");
     }
 
     /*void notify(std::string_view name) {

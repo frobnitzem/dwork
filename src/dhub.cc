@@ -15,7 +15,7 @@
 
 #include "taskDB.cc"
 
-const int num_threads = 1;
+const int num_threads = 4;
 
 static void s_block_signals (void) {
     sigset_t signal_set;
@@ -428,7 +428,7 @@ int main () {
     //  Prepare our context and sockets
     zmq::context_t context (1);
     zmq::socket_t clients (context, zmq::socket_type::router);
-    clients.bind ("tcp://*:5555");
+    clients.bind ("tcp://*:6125");
 
     zmq::socket_t workers (context, zmq::socket_type::dealer);
     workers.bind ("inproc://workers");

@@ -16,21 +16,22 @@ struct Kernel {
     void *x;
     Kernel(long y) : iterations(y) {}
 };
-const long iter = 1<<22; // 4M iterations
 double execute_kernel_compute(const Kernel &k);
 
 class Worker {
     zmq::context_t &context;
     zmq::socket_t hub;
     char hostname[256];
+    const long iter;
 
     public:
 
-    Worker(zmq::context_t &_context)
+    Worker(zmq::context_t &_context, const char *server, const long _iter)
         :  context(_context)
         ,  hub(context, zmq::socket_type::req)
+        ,  iter(_iter)
     {
-        hub.connect ("tcp://localhost:5555");
+        hub.connect(server);
         if(gethostname(hostname, sizeof(hostname))) {
             perror("Error in gethostname");
             exit(1);
@@ -118,6 +119,7 @@ class Worker {
 
     double run() {
         double x = 0.0;
+        long fin = 0;
         //worker_exit(); // re-queue is good practice, but requires unique hostnames (must add rank/CPU num, etc.)
         while(true) {
             std::vector<std::string> tasks;
@@ -125,21 +127,41 @@ class Worker {
             if(tasks.size() == 0) continue; // usleep?
 
             for(auto &t : tasks) { // execute tasks in serial
-                Kernel k(iter);
-                x += execute_kernel_compute(k);
+                if(iter > 0) {
+                    Kernel k(iter);
+                    x += execute_kernel_compute(k);
+                }
+                fin++;
             }
             if( complete(tasks) ) break;
         }
+        printf("Completed %ld tasks\n", fin);
         return x;
     }
 };
 
 int main(int argc, char *argv[]) {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
+    const char localhost[] = "tcp://localhost:6125";
+    const char *hub = localhost;
+    long iter = 0;
 
     zmq::context_t context (1);
+    if(argc >= 3 && !std::string("-s").compare(argv[1])) {
+        hub = argv[2];
+        argv[2] = argv[0];
+        argc -= 2;
+        argv += 2;
+    }
+    if(argc == 2)
+        iter = atol(argv[1]);
+    printf("Connecting to %s and running with iter = %ld\n", hub, iter);
 
-    Worker w(context);
+    int64_t t0 = time_in_us();
+    Worker w(context, hub, iter);
+    int ret = w.run();
+    int64_t t1 = time_in_us();
+    printf("time (us) = %ld\n", t1-t0);
 
-    return w.run();
+    return ret;
 }
