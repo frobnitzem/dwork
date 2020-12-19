@@ -13,7 +13,7 @@ do_test(proto_writer out.pb)
 do_test(taskHeap)
 do_test(taskDB)
 
-#set(CMAKE_CXX_FLAGS "-O3")
+set(CMAKE_CXX_FLAGS "-O3 -fopenmp")
 add_executable(ktest test_kernel.cc kernel.cc)
 add_test(NAME ktest COMMAND ktest 512 512)
 

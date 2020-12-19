@@ -85,6 +85,7 @@ set(DWORK_HEADERS
         include/proto.hh
         include/taskDB.hh
         include/taskHeap.hh
+        include/event.hh
     )
 #####################################################################
 install(FILES ${DWORK_HEADERS} DESTINATION include)

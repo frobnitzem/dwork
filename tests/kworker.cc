@@ -10,6 +10,8 @@
 #include <string>
 
 #include <proto.hh>
+#include <event.hh>
+#include <omp.h>
 
 struct Kernel {
     long iterations;
@@ -120,20 +122,45 @@ class Worker {
     double run() {
         double x = 0.0;
         long fin = 0;
+        const int P = 2; // pipeline depth
         //worker_exit(); // re-queue is good practice, but requires unique hostnames (must add rank/CPU num, etc.)
-        while(true) {
-            std::vector<std::string> tasks;
-            if( steal(tasks) ) break;
-            if(tasks.size() == 0) continue; // usleep?
+        dwork::Event a[P], b[P]; // Events, named after recording process.
+        std::vector<std::string> tasks[P];
 
-            for(auto &t : tasks) { // execute tasks in serial
-                if(iter > 0) {
-                    Kernel k(iter);
-                    x += execute_kernel_compute(k);
+        #pragma omp parallel num_threads(P)
+        {
+            int thread  = omp_get_thread_num();
+            int threads = omp_get_num_threads();
+            bool prev_done = false;
+            for(long i=0; ; i++) {
+                if(thread == 0) { // A
+                    if(i >= P) {
+                        b[i%P].wait(); // wait for i-resources (returned by B)
+                        if(tasks[i%P].size() > 0)
+                            complete(tasks[i%P]);
+                    }
+                    if(prev_done) break;
+
+                    prev_done = steal(tasks[i%P]);
+                    a[i%P].record(prev_done);
                 }
-                fin++;
+
+                if(threads < 2 || thread == 1) { // B
+                    bool done = a[i%P].wait();
+                    if(done) {
+                        b[i%P].record(done);
+                        break;
+                    }
+                    for(auto &t : tasks[i%P]) { // execute tasks in serial
+                        if(iter > 0) {
+                            Kernel k(iter);
+                            x += execute_kernel_compute(k);
+                        }
+                        fin++;
+                    }
+                    b[i%P].record(done);
+                }
             }
-            if( complete(tasks) ) break;
         }
         printf("Completed %ld tasks\n", fin);
         return x;

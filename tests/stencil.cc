@@ -34,7 +34,7 @@ int stencil(long N, long T, int nthreads) {
     int64_t t2, t1, t0 = time_in_us();
     int *ids = (int *)malloc(sizeof(int)*width);
     task_t *start = start_task();
-    task_t *tasks = new_tasks(width);
+    task_t *tasks = new_tasks(width+1);
 
     if(start == NULL || tasks == NULL) {
         printf("# memory alloc error.\n");
@@ -54,8 +54,11 @@ int stencil(long N, long T, int nthreads) {
         if(i > 0)   j += link_task(tasks+k, tasks+k-N-1);
         if(i < N-1) j += link_task(tasks+k, tasks+k-N+1);
     } }
+    for(long i=0; i<N; i++) { // single end-task
+        j += link_task(tasks+k, tasks+k+i-N);
+    }
     printf("# linked %d tasks\n", j);
-    long links = N + (T-1)*(N == 1 ? 1 : 3*N-2);
+    long links = 2*N + (T-1)*(N == 1 ? 1 : 3*N-2);
     if(j != links) {
         goto err;
     }
@@ -68,7 +71,7 @@ int stencil(long N, long T, int nthreads) {
     ret = 0;
 
 err:
-    del_tasks(width, tasks);
+    del_tasks(width+1, tasks);
     free(ids);
 
     return ret;
