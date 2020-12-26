@@ -13,9 +13,19 @@
 #include <event.hh>
 #include <omp.h>
 
+#include <mpi.h>
+#define MPICHECK(cmd) do {                            \
+    int e = cmd;                                      \
+    if( e != MPI_SUCCESS ) {                          \
+      printf("Failed: MPI error %s:%d '%d'\n",        \
+                             __FILE__,__LINE__, e);   \
+      exit(EXIT_FAILURE);                             \
+      }                                               \
+  } while(0)
+
 struct Kernel {
-    long iterations;
-    void *x;
+long iterations;
+void *x;
     Kernel(long y) : iterations(y) {}
 };
 double execute_kernel_compute(const Kernel &k);
@@ -167,11 +177,28 @@ class Worker {
     }
 };
 
+struct MPIH {
+    int ranks, rank;
+    MPI_Comm comm;
+
+    MPIH(int *argc, char **argv[]) : comm(MPI_COMM_WORLD) {
+        int provided;
+        MPICHECK( MPI_Init_thread(argc, argv, MPI_THREAD_FUNNELED, &provided) );
+        assert(provided >= MPI_THREAD_FUNNELED);
+        MPICHECK( MPI_Comm_size( comm, &ranks) );
+        MPICHECK( MPI_Comm_rank( comm, &rank ) );
+    }
+    ~MPIH() {
+        MPI_Finalize();
+    }
+};
+
 int main(int argc, char *argv[]) {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
     const char localhost[] = "tcp://localhost:6125";
     const char *hub = localhost;
     long iter = 0;
+    MPIH mpi(&argc, &argv);
 
     zmq::context_t context (1);
     if(argc >= 3 && !std::string("-s").compare(argv[1])) {
@@ -184,11 +211,16 @@ int main(int argc, char *argv[]) {
         iter = atol(argv[1]);
     printf("Connecting to %s and running with iter = %ld\n", hub, iter);
 
-    int64_t t0 = time_in_us();
     Worker w(context, hub, iter);
+
+    MPI_Barrier(mpi.comm);
+    int64_t t0 = time_in_us();
     int ret = w.run();
+
+    MPI_Barrier(mpi.comm);
     int64_t t1 = time_in_us();
-    printf("time (us) = %ld\n", t1-t0);
+    if(mpi.rank == 0)
+        printf("time (us) = %ld\n", t1-t0);
 
     return ret;
 }

@@ -15,7 +15,36 @@
 
 #include "taskDB.cc"
 
+
 const int num_threads = 4;
+
+#include <sys/resource.h>
+void maximizeFileLimit() {
+    rlim_t maxfiles = 30000;
+    struct rlimit limit;
+    const rlim_t decr_step = 16;
+
+    if (getrlimit(RLIMIT_NOFILE,&limit) == -1) {
+        perror("Error calling getrlimit");
+        return;
+    }
+    rlim_t oldlimit = limit.rlim_cur;
+    if (oldlimit < maxfiles) {
+        rlim_t bestlimit = maxfiles;
+        int setrlimit_error = 0;
+
+        // loop until setrlimit succeeds
+        for(; bestlimit > oldlimit && bestlimit >= decr_step; bestlimit -= decr_step) {
+            limit.rlim_cur = bestlimit;
+            limit.rlim_max = bestlimit;
+            if (setrlimit(RLIMIT_NOFILE,&limit) != -1) break;
+            setrlimit_error = errno;
+        }
+        if (bestlimit < oldlimit)
+            bestlimit = oldlimit;
+        printf("Set max open files to %lu (was %lu)\n", bestlimit, oldlimit);
+    }
+}
 
 static void s_block_signals (void) {
     sigset_t signal_set;
@@ -425,6 +454,7 @@ int main () {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 
     pthread_t threads[num_threads+1];
+    maximizeFileLimit();
 
     //  Prepare our context and sockets
     zmq::context_t context (1);
