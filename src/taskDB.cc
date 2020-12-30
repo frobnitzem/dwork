@@ -10,11 +10,11 @@ TaskT::TaskT(int j) : complete(false), joins(j) {}
 
 TaskT::TaskT(std::string_view x) :
             complete(x.size() == 0),
-            joins(complete ? 0 : (int64_t)tkrzw::StrToIntBigEndian(x)),
+            joins(complete ? 0 : to_int(x)),
             succ(complete ? 0 : x.size()/sizeof(TaskID)-1) {
         const size_t n = succ.size();
         for(size_t i=0; i<n; i++) {
-            succ[i] = tkrzw::StrToIntBigEndian( x.substr((i+1)*sizeof(TaskID)) );
+            succ[i] = to_int( x.substr((i+1)*sizeof(TaskID)) );
         }
 }
 
@@ -50,7 +50,7 @@ class IncrJoin final : public tkrzw::DBM::RecordProcessor {
     std::string_view ProcessFull(std::string_view key, std::string_view value) override {
         int64_t num = incr_;
         if (value.size() != 0) { // 0 if completed already. this will re-queue
-            num += tkrzw::StrToIntBigEndian(value);
+            num += to_int(value);
         }
         if (current_ != nullptr) *current_ = num;
 
@@ -153,7 +153,47 @@ public:
     TaskT &task_;
 };
 
-TaskDB::TaskDB(size_t sz) : TH(sz), tasks(sz) { }
+//TaskDB::TaskDB(size_t sz)                          : TaskDB(sz, "", NULL, NULL) { }
+//TaskDB::TaskDB(size_t sz, std::string_view prefix) : TaskDB(sz, prefix, NULL, NULL) { }
+
+TaskDB::TaskDB(size_t sz, std::string_view prefix,
+               void (*enque)(std::string_view, void *), void *info)
+        : TH(sz, prefix, enque != NULL), tasks(sz) {
+    const bool recover = enque != NULL;
+    const int32_t options = recover ? tkrzw::File::OPEN_DEFAULT : tkrzw::File::OPEN_TRUNCATE;
+
+    if(prefix.size() == 0) return;
+    std::string fname{prefix};
+    fname.append("_tasks.flat");
+
+    tkrzw::Status status = tasks.Open(fname, true, options);
+    if(status != tkrzw::Status::SUCCESS) {
+        throw std::runtime_error("Opening "+fname+" failed: "+status.GetMessage());
+    }
+    // TODO: use IsHealthy
+    if(recover) {
+        /* fill out ready list with 0-dep tasks */
+        auto iter = tasks.MakeIterator();
+        std::string key, val;
+        for(iter->First(); iter->Get(&key, &val) == tkrzw::Status::SUCCESS; iter->Next()) {
+            int64_t n = to_int(val);
+            if(n == 0) {
+                enque(key, info);
+            }
+        }
+    }
+}
+
+TaskDB::~TaskDB() {
+    shutdown();
+}
+
+void TaskDB::shutdown() {
+    TH.shutdown();
+    if(tasks.IsOpen()) {
+        tasks.Close();
+    }
+}
 
 TaskID TaskDB::new_task(std::string_view name, std::vector<std::string_view> deps,
                          void (*enque)(std::string_view, void *), void *info) {

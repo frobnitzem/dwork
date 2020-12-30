@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <taskHeap.hh>
+#include <unistd.h>
+
 #include "test.h"
 
 // offset between names to lookup and sequential task numbers
@@ -18,8 +20,25 @@ int main(int argc, char *argv[]) {
     int test_num = 0;
     int errors = 0;
     size_t ntasks = 0;
+    std::string fname;
 
-    dwork::TaskHeap H(1<<20);
+    int opt;
+    while ( (opt = getopt(argc, argv, "f:")) != -1) {
+        switch (opt) {
+        case 'f':
+            fname = optarg;
+            break;
+        default: /* '?' */
+            fprintf(stderr, "Usage: %s [-f dbfile]\n", argv[0]);
+            return EXIT_FAILURE;
+        }
+    }
+    if (argc - optind != 0) {
+        fprintf(stderr, "Expected no arguments\n");
+        return EXIT_FAILURE;
+    }
+
+    dwork::TaskHeap H(1<<20, "local");
     std::vector<size_t> alloc(1<<20);
 
     for(int i=0; i<(1<<19); i++) {

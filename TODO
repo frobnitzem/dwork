@@ -26,11 +26,13 @@
 
 # Waiting TODO-s
 
-    *. fix documentation error on first-build
+    -. fix documentation error on first-build
+      x fixed by disabling in default build
+
+    x. Get cmake to generate the Task protobuf sources.
+
 
     *. Add a hub test.
-
-    *. Get cmake to generate the Task protobuf sources.
 
     *. Integrate testing into the build / pull request process.
 

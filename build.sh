@@ -23,8 +23,8 @@ set -e
 mkdir build
 cd build
 
-cmake -DCMAKE_PREFIX_PATH=$LOCALROOT -DCMAKE_INSTALL_PREFIX=$LOCALROOT ..
-make -j4
+cmake -v -DCMAKE_PREFIX_PATH=$LOCALROOT -DCMAKE_INSTALL_PREFIX=$LOCALROOT ..
+make -j4 VERBOSE=1
 
 (cd tests && ctest -N)
 make install

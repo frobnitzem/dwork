@@ -37,7 +37,10 @@ struct TaskT {
 class TaskDB {
   public:
     /** Create a TaskDB with hash-table sizes sz */
-    TaskDB(size_t sz);
+    TaskDB(size_t sz, std::string_view prefix = "",
+           void (*enque)(std::string_view, void *) = NULL, void *info = NULL);
+    ~TaskDB();
+    void shutdown(); ///< save and close DB file
 
     /** Add a new task to the DB.
      *

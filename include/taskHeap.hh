@@ -3,11 +3,14 @@
 
 #include <vector>
 #include <tkrzw_dbm_tiny.h>
+#include <stdexcept>
 
 #include <mutex>
 
 namespace dwork {
 #define TASK_BLK 16
+
+inline int64_t to_int(std::string_view x) { return (int64_t)tkrzw::StrToIntBigEndian(x); }
 
 struct TaskInfo {
     std::string name;
@@ -24,7 +27,10 @@ struct TaskBlk {
  */
 class TaskHeap {
   public:
-    TaskHeap(size_t sz);
+    /** Can throw std::runtime_error on file open errors (only if prefix != "") */
+    TaskHeap(size_t sz, std::string_view prefix="", bool recover=false);
+    ~TaskHeap();
+    void shutdown(); ///< save and close DB file
 
     ///< lookup task number from a name (returns -1 on error)
     size_t lookup(std::string_view name);

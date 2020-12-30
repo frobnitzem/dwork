@@ -17,39 +17,50 @@ add_library(dwork_compiler_flags INTERFACE)
 # "target", so things that depend on it see only its "public"       #
 # and "interface" properties.                                       #
 target_compile_features(dwork_compiler_flags INTERFACE cxx_std_17)
+#set_target_properties(
+#    dwork_compiler_flags PROPERTIES
+#    CXX_STANDARD 17
+#    CXX_STANDARD_REQUIRED true
+#    CXX_EXTENSIONS false
+#)
 #####################################################################
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(BUILD_TESTS "Build the tests accompanying this library." ON)
+option(BUILD_DOCS "Build the documentation accompanying this library." OFF)
 configure_file(include/dwork.hh.in include/dwork.hh)
 
 
 find_package(Threads REQUIRED)
-find_package(Protobuf REQUIRED)
 find_package(cppzmq REQUIRED)
 find_package(PkgConfig REQUIRED)
+find_package(Protobuf REQUIRED)
 pkg_search_module(TKRZW tkrzw REQUIRED IMPORTED_TARGET)
 
-# can't use this, since it doesn't put the generated include file in include/
-#protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS proto/TaskMsg.proto)
-set(PROTO_SRCS proto/TaskMsg.pb.cc)
-set(PROTO_HDRS include/TaskMsg.pb.h)
+add_subdirectory(proto) # defines TaskMsg target, installs its headers
 
 ##########  TARGETS  ################################################
-add_library(dwork src/taskDB.cc src/taskHeap.cc src/proto.cc src/dag.cc ${PROTO_SRCS})
+add_library(dwork src/taskDB.cc src/taskHeap.cc src/proto.cc $<TARGET_OBJECTS:TaskMsg>)
 add_executable(manager src/manager.cc)
-add_executable(dhub   src/dhub.cc)
-add_executable(dquery src/dquery.cc)
-#add_subdirectory ("docs")
+add_executable(dhub    src/dhub.cc)
+add_executable(dquery  src/dquery.cc)
 #####################################################################
 
 # library code properties
 
-target_link_libraries(dwork PUBLIC dwork_compiler_flags protobuf::libprotobuf-lite cppzmq PkgConfig::TKRZW Threads::Threads)
+#target_link_libraries(dwork PRIVATE dwork_compiler_flags protobuf::libprotobuf-lite cppzmq PkgConfig::TKRZW Threads::Threads)
+target_link_libraries(dwork PUBLIC
+                        dwork_compiler_flags
+                        protobuf::libprotobuf-lite
+                        cppzmq
+                        PkgConfig::TKRZW
+                        Threads::Threads
+                      )
 target_include_directories(dwork
                            PUBLIC
                             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
                             $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+                            $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/proto>
                             $<INSTALL_INTERFACE:include>
                            )
 # lib needs PIC when BUILD_SHARED_LIBS=ON
@@ -63,6 +74,9 @@ target_link_libraries(dquery dwork)
 
 if(BUILD_TESTS)
   add_subdirectory(tests)
+endif()
+if(BUILD_DOCS)
+  add_subdirectory(docs)
 endif()
 
 #####################################################################
@@ -79,14 +93,12 @@ install(TARGETS ${installable_libs}
 # ATTENTION: add all your library's installed headers to this list  #
 set(DWORK_HEADERS
         "${PROJECT_BINARY_DIR}/include/dwork.hh"
-        "${PROTO_HDRS}"
-        include/dag.hh
-        include/dag_thread.h
         include/proto.hh
         include/taskDB.hh
         include/taskHeap.hh
         include/event.hh
     )
+# note: proto/CMakeList.txt installs ${PROTO_HDRS}
 #####################################################################
 install(FILES ${DWORK_HEADERS} DESTINATION include)
 

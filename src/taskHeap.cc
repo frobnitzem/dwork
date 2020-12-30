@@ -1,4 +1,5 @@
 #include <taskHeap.hh>
+#define INITIAL_TASKHEAP (512)
 
 namespace dwork {
 
@@ -56,7 +57,7 @@ size_t TaskHeap::active() {
 
 void TaskHeap::expand() { // caller must ensure only one thread calls this
     int sz = tasks.size();
-    int end = sz == 0 ? 512 : sz*2;
+    int end = sz == 0 ? INITIAL_TASKHEAP : sz*2;
     tasks.resize(end);
     flist.resize(end*TASK_BLK);
 
@@ -69,8 +70,55 @@ void TaskHeap::expand() { // caller must ensure only one thread calls this
         k -= TASK_BLK;
     }
 }
-TaskHeap::TaskHeap(size_t sz) : ids(sz), nfree(0) {
+TaskHeap::TaskHeap(size_t sz, std::string_view prefix, bool recover) : ids(sz), nfree(0) {
+    const int32_t options = recover ? tkrzw::File::OPEN_DEFAULT : tkrzw::File::OPEN_TRUNCATE;
     expand();
+
+    if(prefix.size() == 0) return;
+    std::string fname{prefix};
+    fname.append("_th.flat");
+
+    tkrzw::Status status = ids.Open(fname, true, options);
+    if(status != tkrzw::Status::SUCCESS) {
+        throw std::runtime_error("Opening "+fname+" failed: "+status.GetMessage());
+    }
+    // TODO: use IsHealthy
+    if(recover) {
+        /* Read all task names */
+        auto iter = ids.MakeIterator();
+        std::string key, val;
+        for(iter->First(); iter->Get(&key, &val) == tkrzw::Status::SUCCESS; iter->Next()) {
+            int64_t n = to_int(val);
+            while(nfree <= n) {
+                expand();
+            }
+            int64_t end = INITIAL_TASKHEAP*TASK_BLK; // end of segment containing n
+            while(n >= end) {
+                end *= 2;
+            }
+            int64_t start = end == INITIAL_TASKHEAP*TASK_BLK ? 0 : end/2;
+            // flist from start to end is stored reversed
+            flist[start + end-n-1] = -1;
+            (*this)[n].name = key;
+        }
+        int64_t used = 0; // compress flist
+        for(int64_t i = 0; i<flist.size(); i++) {
+            if(flist[i] == -1) {
+                used++;
+                continue;
+            }
+            flist[i-used] = flist[i];
+        }
+        nfree -= used;
+    }
+}
+TaskHeap::~TaskHeap() {
+    shutdown();
+}
+void TaskHeap::shutdown() {
+    if(ids.IsOpen()) {
+        ids.Close();
+    }
 }
 size_t TaskHeap::lookup(std::string_view name) {
     std::string n = ids.GetSimple(name, "");
@@ -93,7 +141,7 @@ size_t TaskHeap::new_task(std::string_view name) {
 
     if( n == val ) { // success, store name
         (*this)[n].name = name;
-    } else { // record exists, re
+    } else { // record exists, replace n
         std::lock_guard<std::mutex> lck(mtx);
         flist[nfree++] = n;
     }
