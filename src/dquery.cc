@@ -135,6 +135,7 @@ dwork::QueryMsg loc_msg(dwork::QueryMsg::Type type, char *host) {
 
 int steal(zmq::socket_t &hub, int argc, char *argv[]) {
     char *host = NULL;
+    bool quiet = false;
     int n = 0;
     if(argc > 3 && argc <= 5) {
         if(!std::string("-n").compare(argv[2])) {
@@ -147,6 +148,22 @@ int steal(zmq::socket_t &hub, int argc, char *argv[]) {
             host = argv[4];
         }
     } else if(argc == 3) {
+        if(!std::string("-q").compare(argv[2])) {
+            dwork::QueryMsg query = loc_msg(dwork::QueryMsg::Steal, host);
+            quiet = true;
+            sendProto(hub, query);
+            auto resp = recvProto<dwork::QueryMsg>(hub);
+            if(!resp.has_value()) {
+                std::cout << "Received unparsable query." << std::endl;
+                exit(1);
+            }
+            if(resp->task_size() <= 0) {
+                std::cout << "No task" << std::endl;
+                exit(1);
+            }
+            std::cout << resp->task(0).name() << std::endl;
+            exit(0);
+        }
         host = argv[2];
     } else if(argc != 2) {
         std::cout << "Error in " << argv[1] << ": invalid args" << std::endl;

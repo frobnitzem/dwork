@@ -189,6 +189,7 @@ TaskDB::~TaskDB() {
 }
 
 void TaskDB::shutdown() {
+    printf("Shutting down.\n");
     TH.shutdown();
     if(tasks.IsOpen()) {
         tasks.Close();

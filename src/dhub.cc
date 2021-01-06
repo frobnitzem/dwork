@@ -12,6 +12,7 @@
 #include <deque>
 #include <set>
 #include <proto.hh>
+#include <string>
 
 #include "taskDB.cc"
 
@@ -188,13 +189,13 @@ class TaskMgr {
 class Hub {
     zmq::context_t &context;
     char hostname[256];
-    dwork::TaskDB db;
     TaskMgr mgr;
+    dwork::TaskDB db;
 
   public:
-    Hub(zmq::context_t &arg)
+    Hub(zmq::context_t &arg, char *fname=NULL)
                 : context( arg )
-                , db(1<<20)
+                , db(1<<20, fname, fname == NULL ? NULL : Hub::enque_new, (void *)this)
     {
         if(gethostname(hostname, sizeof(hostname))) {
             perror("Error in gethostname");
@@ -450,11 +451,16 @@ void *runWorker(void *arg) {
     return (*w)();
 }
 
-int main () {
+int main (int argc, char *argv[]) {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
+    char *fname = NULL;
 
     pthread_t threads[num_threads+1];
     maximizeFileLimit();
+
+    if(argc >= 3 && !std::string("-f").compare(argv[1])) {
+        fname = argv[2];
+    }
 
     //  Prepare our context and sockets
     zmq::context_t context (1);
@@ -466,7 +472,7 @@ int main () {
 
     s_block_signals();
 
-    Hub hub(context);
+    Hub hub(context, fname);
 
     //  Launch pool of worker threads
     pthread_create(&threads[0], NULL, WaitForAbortThread, (void *) &context);

@@ -98,6 +98,7 @@ TaskHeap::TaskHeap(size_t sz, std::string_view prefix, bool recover) : ids(sz), 
             }
             int64_t start = end == INITIAL_TASKHEAP*TASK_BLK ? 0 : end/2;
             // flist from start to end is stored reversed
+            printf("n=%ld start=%ld end=%ld flist=%ld\n", n, start, end, flist[start + end-n-1]);
             flist[start + end-n-1] = -1;
             (*this)[n].name = key;
         }

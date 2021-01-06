@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
 
     std::vector<std::string> start;
     
+    //dwork::TaskDB db(1<<10, "test", enque, &start);
     dwork::TaskDB db(1<<10);
 
     add_leaf(db, "B", &start);
