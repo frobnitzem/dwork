@@ -9,8 +9,6 @@ It requires the following dependencies:
 
 * [TKRZW](https://dbmx.net/tkrzw)
 * [Protobuf](https://developers.google.com/protocol-buffers/docs/cpptutorial)
-* [hiredis](https://github.com/redis/hiredis) and a running redis server
-   - presently the code is hardwired to use localhost on the default port
 * [cppzmq](https://github.com/zeromq/cppzmq)
    - more information on ZeroMQ at https://zeromq.org/
 
