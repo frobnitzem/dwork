@@ -193,9 +193,9 @@ class Hub {
     dwork::TaskDB db;
 
   public:
-    Hub(zmq::context_t &arg, char *fname=NULL)
+    Hub(zmq::context_t &arg, std::string_view fname)
                 : context( arg )
-                , db(1<<20, fname, fname == NULL ? NULL : Hub::enque_new, (void *)this)
+                , db(1<<20, fname, fname.size() == 0 ? NULL : Hub::enque_new, (void *)this)
     {
         if(gethostname(hostname, sizeof(hostname))) {
             perror("Error in gethostname");
@@ -453,7 +453,7 @@ void *runWorker(void *arg) {
 
 int main (int argc, char *argv[]) {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
-    char *fname = NULL;
+    std::string_view fname("");
 
     pthread_t threads[num_threads+1];
     maximizeFileLimit();

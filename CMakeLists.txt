@@ -80,6 +80,12 @@ if(BUILD_DOCS)
 endif()
 
 #####################################################################
+# ATTENTION: add all binary targets you want to install here:       #
+set(installable_bin dhub dquery)
+#####################################################################
+install(TARGETS ${installable_bin} DESTINATION bin)
+
+#####################################################################
 # ATTENTION: add all library targets you want to install here:      #
 set(installable_libs dwork dwork_compiler_flags)
 #####################################################################
