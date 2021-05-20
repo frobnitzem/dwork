@@ -221,6 +221,7 @@ class Hub {
 
 void Hub::enque_new(std::string_view name, void *info) {
     Hub *h = (Hub *)info;
+    //std::cout << "Adding to ready: " << name << std::endl;
     h->mgr.lpush( name );
 }
 void Hub::enque_ready(std::string_view name, void *info) {

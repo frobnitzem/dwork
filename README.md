@@ -31,6 +31,41 @@ The `dquery` tool sends and receives messages from the server to accomplish addi
 All valid messages are enumerated documentation.
 The underlying format is in [the protobuf file](https://github.com/frobnitzem/dwork/blob/master/proto/TaskMsg.proto).
 
+# Writing a client in python
+
+Since dwork is a server that speaks protobuf over zmq, you can easily interact
+with the task server from python.
+
+Python Package Setup:
+
+* pip3 install protobuf pyzmq
+
+
+Example Script:
+
+```
+import taskMsg
+import zmq
+
+# Create a request message
+msg = taskMsg.TaskMsg()
+msg.type = taskMsg.REQUEST
+print("Sending: ")
+print(msg)
+
+# Open a connection to the dhub
+context = zmq.Context()
+dhub = context.socket(zmq.REQ)
+dhub.connect("tcp://localhost:5555")
+
+# Send the request. Receive and process the reply.
+dhub.send(msg.SerializeToString())
+msg.ParseFromString( dhub.recv() )
+
+print("Received: ")
+print(msg)
+```
+
 # Advanced Usage
 
 The behavior of the above programs can be altered by command-line arguments.  Notably, `dhub` accepts a "-f"

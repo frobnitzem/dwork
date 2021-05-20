@@ -176,9 +176,10 @@ TaskDB::TaskDB(size_t sz, std::string_view prefix,
         auto iter = tasks.MakeIterator();
         std::string key, val;
         for(iter->First(); iter->Get(&key, &val) == tkrzw::Status::SUCCESS; iter->Next()) {
-            int64_t n = to_int(val);
+            const int64_t k = to_int(key);
+            const int64_t n = to_int(val);
             if(n == 0) {
-                enque(key, info);
+                enque(TH[k].name, info);
             }
         }
     }
