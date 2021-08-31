@@ -99,10 +99,10 @@ install(TARGETS ${installable_libs}
 # ATTENTION: add all your library's installed headers to this list  #
 set(DWORK_HEADERS
         "${PROJECT_BINARY_DIR}/include/dwork.hh"
-        include/proto.hh
-        include/taskDB.hh
-        include/taskHeap.hh
-        include/event.hh
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/proto.hh
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/taskDB.hh
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/taskHeap.hh
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/event.hh
     )
 # note: proto/CMakeList.txt installs ${PROTO_HDRS}
 #####################################################################

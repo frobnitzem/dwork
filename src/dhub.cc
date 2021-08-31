@@ -452,21 +452,40 @@ void *runWorker(void *arg) {
     return (*w)();
 }
 
+std::string bind_addr(int port) {
+    std::ostringstream ss;
+    ss << "tcp://*:" << port;
+    return ss.str();
+}
+
 int main (int argc, char *argv[]) {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
     std::string_view fname("");
+    int port = 6125;
 
     pthread_t threads[num_threads+1];
     maximizeFileLimit();
 
-    if(argc >= 3 && !std::string("-f").compare(argv[1])) {
-        fname = argv[2];
+    while(argc > 1) {
+        if(argc >= 3 && !std::string("-f").compare(argv[1])) {
+            fname = argv[2];
+            argv[2] = argv[0];
+            argc -= 2;
+            argv += 2;
+        } else if(argc >= 3 && !std::string("-p").compare(argv[1])) {
+            port = atoi(argv[2]);
+            argv[2] = argv[0];
+            argc -= 2;
+            argv += 2;
+        } else {
+            break;
+        }
     }
 
     //  Prepare our context and sockets
     zmq::context_t context (1);
     zmq::socket_t clients (context, zmq::socket_type::router);
-    clients.bind ("tcp://*:6125");
+    clients.bind (bind_addr(port));
 
     zmq::socket_t workers (context, zmq::socket_type::dealer);
     workers.bind ("inproc://workers");

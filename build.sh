@@ -26,5 +26,5 @@ cd build
 cmake -DBUILD_DOCS=ON -DCMAKE_PREFIX_PATH=$LOCALROOT -DCMAKE_INSTALL_PREFIX=$LOCALROOT ..
 make -j4 VERBOSE=1
 
-(cd tests && ctest -N)
+(cd tests && ctest)
 make install
